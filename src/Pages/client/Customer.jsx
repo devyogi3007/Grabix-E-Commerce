@@ -1,30 +1,30 @@
-import React from 'react';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import React from "react";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
-import CustomerRoutes from '../../Routes/CustomerRoutes'
-import { ToastContainer } from 'react-toastify';
+import CustomerRoutes from "../../Routes/CustomerRoutes";
+import { ToastContainer } from "react-toastify";
 
 function Customer() {
   return (
-    <div>
-    <Navbar/>
-    <CustomerRoutes />
-    <Footer/>
-    <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
+    <div className="relative">
+      <Navbar />
+      <CustomerRoutes />
+      <Footer />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
       />
-      </div>
+    </div>
   );
 }
 
-export default Customer
+export default Customer;

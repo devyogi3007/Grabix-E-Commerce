@@ -10,40 +10,32 @@ import { useState } from "react";
 import styles from "../styles/Cart.module.css";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
+import useLocalStorageState from "use-local-storage-state";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../../admin/firebase";
 
 const arr = JSON.parse(localStorage.getItem("address")) || [];
 
 const Payment = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const [userAddress, setUserAddress] = useState(
-    JSON.parse(localStorage.getItem("address")) || {
-      name: "",
-      address: "",
-      city: "",
-      mob: ""
-    }
-  );
-
-  React.useEffect(() => {
-    setUserAddress(
-      JSON.parse(localStorage.getItem("address")) || {
-        name: "",
-        address: "",
-        city: "",
-        mob: ""
-      }
-    );
-  }, []);
-
-  const cartItem = useSelector((store) => {
-    return store.cartReducer.cart;
+  const [cart, setCart] = useLocalStorageState("cart", {
+    cart: {}
+  });
+  const [userAddress] = useLocalStorageState("address", {});
+  const userData = useSelector((store) => {
+    return store.userAuthReducer.user;
   });
 
   const handleRemove = (el) => {
-    dispatch(removeFromCart(el));
+    setCart((prevCart) => {
+      const updatedCart = prevCart.cart?.filter((item) => item.id !== el.id);
+      return { cart: updatedCart };
+    });
   };
+
+  const getProducts = () => cart.cart || [];
+  const totalQuantity =
+    getProducts().reduce((acc, product) => acc + product.quantity, 0) || 0;
 
   const truncatedstring = (str, num) => {
     if (str?.length > num) {
@@ -53,17 +45,44 @@ const Payment = () => {
     }
   };
 
-  let value = 0;
-  let offerValue = 0;
-  cartItem.map((el) => {
-    offerValue += Number(el.price);
-    return (value = value + Number(el.price2));
-  });
-  const finalAmount = offerValue;
-  offerValue = value - offerValue;
+  const { totalDiscountedPrice, totalDiscount } = getProducts().reduce(
+    (acc, product) => {
+      let discountedPrice;
+      let discountAmount;
 
-  console.log(cartItem.length, "cart");
+      // Calculate discount based on type
+      if (product.discountType === "%") {
+        discountAmount = product.price * (product.discount / 100);
+        discountedPrice = product.price - discountAmount;
+      } else if (product.discountType === "₹") {
+        discountAmount = product.discount;
+        discountedPrice = product.price - discountAmount;
+      } else {
+        discountedPrice = product.price;
+        discountAmount = 0;
+      }
 
+      // Ensure discounted price doesn’t go below zero
+      discountedPrice = Math.max(0, discountedPrice);
+      const productTotal = discountedPrice * product.quantity;
+      acc.totalDiscountedPrice += productTotal;
+      acc.totalDiscount += discountAmount * product.quantity;
+
+      return acc;
+    },
+    { totalDiscountedPrice: 0, totalDiscount: 0 }
+  );
+
+  const totalPrice = getProducts().reduce((acc, product) => {
+    const productTotal = product.price2 * product.quantity;
+    return acc + productTotal;
+  }, 0);
+  const totalMRP = getProducts().reduce((acc, product) => {
+    const productTotal = product.price * product.quantity;
+    return acc + productTotal;
+  }, 0);
+
+  console.log({ totalDiscountedPrice, totalDiscount }, "cart total");
   function myBtn() {
     var modal = document.getElementById("myModal");
     modal.style.display = "block";
@@ -79,7 +98,7 @@ const Payment = () => {
     }
   };
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     const { name, address, city, mob } = userAddress;
     if (
       name.length > 4 &&
@@ -87,37 +106,65 @@ const Payment = () => {
       address.length > 4 &&
       city.length > 3
     ) {
-      navigate("/payment");
+      try {
+        getProducts().map((product) => {
+          const docRef = addDoc(collection(db, "orders"), {
+            ...product,
+            userId: userData?.uid,
+            userAddress,
+            orderDate: serverTimestamp(),
+            totalPrice
+          });
+          console.log("Document written with ID: ", docRef.id);
+          return docRef;
+          // Clear fields after successful submission
+          // setProduct(initialProduct);
+        });
+        navigate("/payment-form");
+      } catch (e) {
+        console.error("Error adding document: ", e);
+        // setError("Error adding product");
+      }
+      // navigate("/payment-demo");
     } else {
       toast.warn("Check Your Details properly!");
     }
   };
-  console.log(arr, "vvvv");
+  console.log({ products: getProducts(), userAddress, userData });
 
   return (
     <>
       <div className="flex flex-col bg-[#F5F1F7] h-[100vh]">
         <div className="flex pl-[13%] pt-8 pb-5">
           <h2 className="text-[24px] font-semibold ">
-            Cart ({`${cartItem.length} Item`})
+            Cart ({`${totalQuantity} Item`})
           </h2>
         </div>
         <div className="flex flex-row justify-center items-center gap-x-4 ">
           <div className="overflow-y-scroll scroll-smooth h-[300px]">
             <div>
-              {cartItem.map((el) => (
+              {getProducts().map((el) => (
                 <div className=" border-[1px] border-[#dbdbdb65] shadow-xl w-auto rounded-lg px-6 py-10 flex flex-row mb-3 bg-[#FFFFFF]">
                   <div className="flex flex-row">
                     <div>
-                      <img src={el.img} alt="img" className="h-[70px] " />
+                      <img src={el.image} alt="img" className="h-[70px] " />
                     </div>
                     <div className="ml-5 flex flex-col font-medium gap-y-2">
-                      <div>{truncatedstring(el.title, 40)}</div>
+                      <div>{truncatedstring(el.name, 40)}</div>
                       <div className="flex flex-row gap-x-2">
-                        <div className="font-semibold">₹{el.price}</div>
-                        <div className="font-medium line-through">
-                          ₹{el.price2}
+                        <div className="font-semibold">
+                          {" "}
+                          ₹
+                          {el.price2 ||
+                            el.price - (el.price * el?.discount) / 100}
                         </div>
+
+                        <div className="font-medium line-through">
+                          ₹{el.price}
+                        </div>
+                      </div>
+                      <div>
+                        <p>quantity: {el?.quantity}</p>
                       </div>
                     </div>
                   </div>
@@ -144,11 +191,11 @@ const Payment = () => {
                   <p className="pt-2 font-bold text-[18px]">Total Amount</p>
                 </div>
                 <div className="flex flex-col px-4 text-[#7a7a7a]">
-                  <p className="pt-2">₹{value}</p>
-                  <p className="pt-2">₹{offerValue}</p>
+                  <p className="pt-2">₹{totalMRP}</p>
+                  <p className="pt-2">-₹{totalDiscount}</p>
                   <p className="pt-2 pb-2 border-b-2">rate</p>
                   <p className="pt-2 text-black font-bold text-[18px]">
-                    ₹{finalAmount}
+                    ₹{totalPrice}
                   </p>
                 </div>
               </div>

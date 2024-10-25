@@ -6,6 +6,7 @@ import Widget from "../../components/widget/Widget";
 // import Chart from "../../components/chart/Chart";
 import Table from "../../components/table/Table";
 import { Chip } from "@mui/material";
+import { endpoints } from "../../../../Helpers";
 
 const Dashboard = () => {
   const statusBarCards = [
@@ -17,11 +18,13 @@ const Dashboard = () => {
     <div className="home h-full overflow-y-auto">
       <div className="homeContainer">
         <div className="widgets">
-          <Widget type="product" />
-          <Widget type="order" />
+          {endpoints.map((endpoint) => (
+            <Widget type={endpoint} />
+          ))}
+          {/* <Widget type="order" />
           <Widget type="stores" />
-          <Widget type="customers" />
-          <Widget type="earning" />
+          <Widget type="customers" /> */}
+          {/* <Widget type="earning" /> */}
         </div>
         {/* CHARTS Section */}
         {/* <div className="charts">

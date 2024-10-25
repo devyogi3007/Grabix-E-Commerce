@@ -1,24 +1,66 @@
 // import { Card } from '@mui/material'
 import React from "react";
 import { useParams } from "react-router-dom";
+import { formatter, getDocument } from "../../../../Helpers/firebaseHelper";
+import { formatDate, formatTimestamp } from "../../datatablesource";
 
 function OrderDetails() {
-  let { id } = useParams();
+  let { Id } = useParams();
+  const [data, setData] = React.useState({});
+  const [vendor, setVendor] = React.useState({});
+
+  React.useEffect(() => {
+    getDocument("orders", Id).then((data) => setData(data));
+  }, [Id]);
+  React.useEffect(() => {
+    if (data?.vId) {
+      getDocument("users", data?.vId).then((data) => setVendor(data));
+    }
+  }, [data?.vId]);
+
+  console.log({ data, vendor });
+
+  const dateObj = formatTimestamp(
+    data?.orderDate?.seconds,
+    data?.orderDate?.nanoseconds
+  );
+  const timestampData = data?.orderDate;
+  const milliseconds =
+    timestampData?.seconds * 1000 + timestampData?.nanoseconds / 1000000;
+
+  // Create a Date object
+  const date = new Date(milliseconds);
+
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+  const ampm = hours >= 12 ? "PM" : "AM";
+
+  // Convert hours to 12-hour format
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+
+  // Format minutes to always be two digits
+  const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
+
+  // Final formatted time
+  const time12hr = `${hours}:${formattedMinutes} ${ampm}`;
+  const formattedDate = formatDate(dateObj);
+
   return (
     <>
       <div className="text-xl align-left lg:text-xl font-semibold  text-gray-500">
-        OrderDetails
+        Order Details
       </div>
       <div class="py-14 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
         <div className='class="flex flex-col justify-start items-start  bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full"'>
           <h4 class="text-xl align-left text-gray-800 lg:text-xl font-semibold  text-gray-800">
-            Order #{id}
+            Order #{Id}
           </h4>
           <p class="text-base dark:text-gray-700 font-medium leading-6 text-gray-800">
-            21 Apr 2024 23:51
+            {time12hr} {formattedDate}
           </p>
           <h3>
-            <b>Vendor Name:</b> Apple
+            <b>Vendor Name:</b> {vendor?.storeName}
           </h3>
         </div>
 
@@ -32,21 +74,21 @@ function OrderDetails() {
                 <div class="pb-4 md:pb-8 w-full md:w-40">
                   <img
                     class="w-full hidden md:block"
-                    src="https://i.ibb.co/84qQR4p/Rectangle-10.png"
+                    src={data?.image || ""}
                     alt="dress"
                   />
                   <img
                     class="w-full md:hidden"
-                    src="https://i.ibb.co/L039qbN/Rectangle-10.png"
+                    src={data?.image || ""}
                     alt="dress"
                   />
                 </div>
                 <div class="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
                   <div class="w-full flex flex-col justify-start items-start space-y-8">
                     <h3 class="text-xl text-gray-800 xl:text-2xl font-semibold leading-6 text-gray-800">
-                      Premium Quaility Dress
+                      {data?.name}
                     </h3>
-                    <div class="flex justify-start items-start flex-col space-y-2">
+                    {/* <div class="flex justify-start items-start flex-col space-y-2">
                       <p class="text-sm text-gray-800 leading-none text-gray-800">
                         <span class="dark:text-gray-400 text-gray-300">
                           Style:{" "}
@@ -65,23 +107,26 @@ function OrderDetails() {
                         </span>{" "}
                         Light Blue
                       </p>
-                    </div>
+                    </div> */}
                   </div>
                   <div class="flex justify-between space-x-8 items-start w-full">
                     <p class="text-base text-gray-800 xl:text-lg leading-6">
-                      $36.00{" "}
-                      <span class="text-red-300 line-through"> $45.00</span>
+                      {formatter.format(data?.price2)}{" "}
+                      <span class="text-red-300 line-through">
+                        {" "}
+                        {formatter.format(data?.price)}
+                      </span>
                     </p>
                     <p class="text-base text-gray-800 xl:text-lg leading-6 text-gray-800">
-                      01
+                      {data?.quantity}{" "}
                     </p>
                     <p class="text-base text-gray-800 xl:text-lg font-semibold leading-6 text-gray-800">
-                      $36.00
+                      {formatter.format(data?.price2 * data?.quantity)}
                     </p>
                   </div>
                 </div>
               </div>
-              <div class="mt-6 md:mt-0 flex justify-start flex-col md:flex-row items-start md:items-center space-y-4 md:space-x-6 xl:space-x-8 w-full">
+              {/* <div class="mt-6 md:mt-0 flex justify-start flex-col md:flex-row items-start md:items-center space-y-4 md:space-x-6 xl:space-x-8 w-full">
                 <div class="w-full md:w-40">
                   <img
                     class="w-full hidden md:block"
@@ -133,7 +178,7 @@ function OrderDetails() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
             <div class="flex justify-center flex-col md:flex-row flex-col items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
               <div class="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50  space-y-6">
@@ -146,7 +191,7 @@ function OrderDetails() {
                       Subtotal
                     </p>
                     <p class="text-base text-black leading-4 text-black">
-                      $56.00
+                      {formatter.format(data?.price * data?.quantity)}
                     </p>
                   </div>
                   <div class="flex justify-between items-center w-full">
@@ -165,7 +210,7 @@ function OrderDetails() {
                       Shipping
                     </p>
                     <p class="text-base text-black leading-4 text-black">
-                      $8.00
+                      {"rate"}
                     </p>
                   </div>
                 </div>
@@ -174,7 +219,7 @@ function OrderDetails() {
                     Total
                   </p>
                   <p class="text-base text-black font-semibold leading-4 text-black">
-                    $36.00
+                    {formatter.format(data?.price2 * data?.quantity)}
                   </p>
                 </div>
               </div>
@@ -225,7 +270,7 @@ function OrderDetails() {
                   />
                   <div class="flex justify-start items-start flex-col space-y-2">
                     <p class="text-base text-gray-800 font-semibold leading-4 text-left text-gray-800">
-                      David Kent
+                      {data?.userAddress?.name}
                     </p>
                     <p class="text-sm text-black leading-5 text-black">
                       10 Previous Orders
@@ -245,7 +290,7 @@ function OrderDetails() {
                     alt="email"
                   />
                   <p class="cursor-pointer text-sm leading-5 ">
-                    david89@gmail.com
+                    {data?.userAddress?.mob}
                   </p>
                 </div>
               </div>
@@ -256,7 +301,7 @@ function OrderDetails() {
                       Shipping Address
                     </p>
                     <p class="w-48 lg:w-full text-black xl:w-48 text-center md:text-left text-sm leading-5 text-black">
-                      180 North King Street, Northhampton MA 1060
+                      {data?.userAddress?.address}, {data?.userAddress?.city}
                     </p>
                   </div>
                   <div class="flex justify-center md:justify-start items-center md:items-start flex-col space-y-4">
@@ -264,7 +309,7 @@ function OrderDetails() {
                       Billing Address
                     </p>
                     <p class="w-48 lg:w-full text-black xl:w-48 text-center md:text-left text-sm leading-5 text-black">
-                      180 North King Street, Northhampton MA 1060
+                      {data?.userAddress?.address}, {data?.userAddress?.city}
                     </p>
                   </div>
                 </div>

@@ -9,10 +9,10 @@ import { BsGooglePlay } from "react-icons/bs";
 
 const Footer = () => {
   return (
-    <div className="w-[100%] px-8 md:pl-32 pt-4 md:pt-10">
-      <div className="flex flex-col md:flex-row gap-x-32 mb-10 mt-12">
+    <div className="w-full px-8 md:pl-32 pt-4 md:pt-10">
+      <div className="flex flex-col md:flex-row gap-x-32">
         <div className="">
-          <img src={logo} alt="logo" />
+          <img src={logo} alt="logo" className="w-[250px]" />
           <div className="flex flex-row gap-4 mt-6">
             {socialmedia.map((socialmed, id) => (
               <div
@@ -26,7 +26,7 @@ const Footer = () => {
           </div>
           <p className="mt-5">&#169;Designed by Wolgan</p>
         </div>
-        <div className="flex flex-row  gap-12 md:gap-x-12 mb-10 mt-6 md:mt-0">
+        <div className="flex flex-row gap-12 md:gap-x-12 mb-10 mt-6 md:mt-0">
           <div className="mt-8">
             <ul className="gap-4">
               <li className="mb-2">Home</li>

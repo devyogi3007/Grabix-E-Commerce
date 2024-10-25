@@ -1,33 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import './SearchDropdown.css';
+import React, { useState, useEffect } from "react";
+import "./SearchDropdown.css";
 
 const SearchDropdown = ({ data }) => {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [filteredData, setFilteredData] = useState(data);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
-    if (query === '') {
+    if (query === "") {
       setFilteredData(data);
     } else {
       setFilteredData(
-        data.filter(item =>
-          item.toLowerCase().includes(query.toLowerCase())
-        )
+        data.filter((item) => item.toLowerCase().includes(query.toLowerCase()))
       );
     }
   }, [query, data]);
 
   const handleInputChange = (e) => {
-    if (e.target.value === "") 
-    {
+    if (e.target.value === "") {
       setQuery("");
       setIsDropdownOpen(false);
     } else {
-        setQuery(e.target.value);
-        setIsDropdownOpen(true);
+      setQuery(e.target.value);
+      setIsDropdownOpen(true);
     }
-    
   };
 
   const handleItemClick = (item) => {

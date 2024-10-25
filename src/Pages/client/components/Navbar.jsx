@@ -8,19 +8,22 @@ import { useSelector } from "react-redux";
 import DeliveryLocation from "./DeliveryLocation";
 import MenuDropdown from "./MenuDropdown";
 import SearchComponent from "./SearchComponent";
+import useLocalStorageState from "use-local-storage-state";
 
 const Navbar = () => {
+  const [cart, setCart] = useLocalStorageState("cart", {
+    cart: []
+  });
+
   const userData = useSelector((store) => {
     return store.userAuthReducer.user;
   });
 
-  const cartItem = useSelector((store) => {
-    return store.cartReducer.cart;
-  });
-
+  const cartItem = () => cart?.cart || [];
   let value = 0;
   let offerValue = 0;
-  cartItem.map((el) => {
+
+  cartItem().map((el) => {
     offerValue += Number(el.price);
     return (value = value + Number(el.price2));
   });
@@ -28,13 +31,15 @@ const Navbar = () => {
   const finalAmount = offerValue;
   offerValue = value - offerValue;
 
-  // console.log(cartItem,"dd");
+  // console.log(cartItem(),"dd");
 
   const id = userData?.uid;
+  // const getProducts = () => Object.values(cart || {});
+  const totalQuantity = cartItem().length;
 
   return (
     <>
-      <div className="bg-white border-b-2 border-gray-600 flex flex-row h-[80px] w-[100%] items-center justify-around md:justify-evenly">
+      <div className=" z-10 bg-white flex flex-row h-[80px] w-[100%] items-center justify-around md:justify-evenly">
         <div className="flex flex-row items-center justify-evenly">
           <Link to="/">
             <img
@@ -64,7 +69,7 @@ const Navbar = () => {
         />
         <BsSearch className="sm:flex text-[#0A1408] text-[20px]" />
         <Link to="/cart">
-          {cartItem.length <= 0 ? (
+          {cartItem().length <= 0 ? (
             <BsCart3 className="text-[24px] text-[#0A1408] mr-3" />
           ) : (
             <div>
@@ -75,7 +80,7 @@ const Navbar = () => {
                 <BsCart3 className="text-[24px] mr-3 text-[#0A1408] " />
                 <span class="absolute inset-0 object-right-top -mr-6">
                   <div class="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-red-500 text-white">
-                    {cartItem.length}
+                    {totalQuantity}
                   </div>
                 </span>
               </button>
@@ -92,9 +97,9 @@ const Navbar = () => {
         ) : (
           <Link
             to="/account"
-            className="text-[#0A1408] font-semibold hidden sm:flex"
+            className="text-[#0A1408] font-semibold text-xs hover:text-[#f61571] hover:border-[#f61571] border border-[#0A1408] px-5 py-2"
           >
-            <MenuDropdown />
+            My account
           </Link>
         )}
 

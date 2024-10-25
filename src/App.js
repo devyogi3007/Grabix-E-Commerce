@@ -1,15 +1,32 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Customer from "./Pages/client/Customer";
 import Admin from "./Pages/admin/Admin";
+import Login from "./Pages/admin/pages/login/Login";
+import Signup from "./Pages/admin/pages/signup";
+// import { useSelector } from "react-redux";
+import * as React from "react";
+import PrivateRoute from "./Routes/AdminPrivateRoute";
+import AuthProvider from "./Pages/admin/context/AuthContext";
 
 function App() {
+
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/*" element={<Customer />} />
-        <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
-        <Route path="/admin/*" element={<Admin />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+
+          <Route path="/*" element={<Customer />} />
+          <Route path="/store/apply" element={<Signup />} />
+          <Route path="/pannel" element={<Navigate to="/pannel/login" />} />
+
+          <Route element={<PrivateRoute />}>
+            {/* {isAdmin && <Route path="/pannel" element={<Navigate to="/pannel/dashboard" />} />} */}
+            <Route path="/pannel" element={<Navigate to="/pannel/dashboard" />} />
+            <Route path="/pannel/*" element={<Admin />} />
+          </Route>
+          <Route path="/pannel/login" element={<Login />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

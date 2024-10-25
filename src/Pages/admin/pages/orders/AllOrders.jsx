@@ -1,6 +1,11 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import "./orders.scss";
+
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ViewArrayIcon from "@mui/icons-material/ViewArray";
+
 import AllProducts from "../products/data-productslist";
 import {
   orderColumns
@@ -12,10 +17,12 @@ import { Chip } from "@mui/material";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
+import { useAuth } from "../../context/AuthContext";
 
-const OrdersList = () => {
+const OrdersList = ({ isAdmin }) => {
   const [data, setData] = useState([]);
   // const [isDataFetched, setDataFetched] = useState(false);
+  const auth = useAuth();
 
   useEffect(() => {
     fetchOrdersList();
@@ -27,7 +34,11 @@ const OrdersList = () => {
         ...doc.data(),
         id: doc.id
       }));
-      setData(newData);
+      if (isAdmin) {
+        setData(newData);
+      } else {
+        setData(newData?.filter((item) => item.vId === auth?.token?.id));
+      }
     });
   };
   const handleDelete = async (id) => {
@@ -38,25 +49,28 @@ const OrdersList = () => {
     //     console.log(err);
     //   }
   };
+  console.log(data);
   const actionColumn = [
     {
       field: "action",
       headerName: "Action",
-      width: 200,
+      width: 220,
       renderCell: (params) => {
         return (
-          <div className="cellAction">
+          <div className="flex gap-5 h-full items-center">
             <Link
-              to={`/admin/orders/${params.row.id}`}
+              to={`/pannel/orders/${params.row.id}`}
               style={{ textDecoration: "none" }}
             >
-              <div className="viewButton">View</div>
+              <div className="text-[#7451f8]">
+                <ViewArrayIcon />
+              </div>
             </Link>
             <div
-              className="deleteButton"
+              className="text-[#7451f8] cursor-pointer "
               onClick={() => handleDelete(params.row.id)}
             >
-              Delete
+              <DeleteIcon />
             </div>
           </div>
         );
@@ -75,14 +89,14 @@ const OrdersList = () => {
           </p>
         </p>
       </div>
-      <div className="h-[calc(100vh_-_11rem)]">
+      <div className="h-[calc(100vh_-_11rem)] w-[calc(100vw_-_18rem)]">
         <DataGrid
-          className="overflow-auto position-relative h-full bg-white"
+          className="overflow-auto w-full position-relative h-full bg-white"
           rows={data || []}
           columns={orderColumns.concat(actionColumn)}
           pageSize={9}
           rowsPerPageOptions={[9]}
-          checkboxSelection
+          // checkboxSelection
           // autoHeight
           rowHeight={125}
         />
