@@ -1,20 +1,23 @@
 import React, { useEffect } from "react";
-import styles from "../styles/UserAccount.module.css";
-import {
-  BsFillBagCheckFill,
-  BsFillChatTextFill,
-  BsFillGeoAltFill,
-  BsFillPersonFill
-} from "react-icons/bs";
-import Order from "../components/Order";
-import Profile from "../components/Profile";
-import Customer from "../components/CustomerMenu";
-import Addresses from "../components/Addresses";
-import { auth } from "../../../firebase";
+// import styles from "../styles/UserAccount.module.css";
+// import {
+//   BsFillBagCheckFill,
+//   BsFillChatTextFill,
+//   BsFillGeoAltFill,
+//   BsFillPersonFill
+// } from "react-icons/bs";
+// import Order from "../components/Order";
+// import Profile from "../components/Profile";
+// import Customer from "../components/CustomerMenu";
+// import Addresses from "../components/Addresses";
+import { auth, db } from "../../../firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { userLogout } from "../../../Redux/UserAuth/userAuth.actions";
-import { addToCart } from "../../../Redux/Cart/cart.actions";
-import { useNavigate } from "react-router-dom";
+// import {
+//   userLogin,
+//   userLogout
+// } from "../../../Redux/UserAuth/userAuth.actions";
+// import { addToCart } from "../../../Redux/Cart/cart.actions";
+// import { useNavigate } from "react-router-dom";
 import withLayout from "../../../Hooks/WithAccountLayout";
 import {
   FormControl,
@@ -24,6 +27,9 @@ import {
   RadioGroup,
   TextField
 } from "@mui/material";
+import { doc, updateDoc } from "firebase/firestore";
+import { getAuth, updateEmail } from "firebase/auth";
+import { getDocument } from "../../../Helpers/firebaseHelper";
 // const arr = JSON.parse(localStorage.getItem("orderItem")) || [];
 
 const initialFormState = {
@@ -34,46 +40,20 @@ const initialFormState = {
 };
 function UserAccount() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const [form, setForm] = React.useState(initialFormState);
+  const [refreshDataCounter, setRefreshDataCounter] = React.useState(0);
   const [formDisabled, setFormDisabled] = React.useState({
     id: 0,
     isDisabled: true
   });
-  // const allUsers = React.useMemo(() => [], []);
-  // const listAllUsers = React.useCallback(
-  //   async (nextPageToken) => {
-  //     const res = { user: [] };
-  //     allUsers.push(...res.users);
-  //     if (res.pageToken) {
-  //       await listAllUsers(res.pageToken);
-  //     }
-  //   },
-  //   [allUsers]
-  // );
-
-  // useEffect(() => {
-  //   // listAllUsers();
-  //   // console.log(allUsers);
-  // }, [allUsers]);
-
-  const handleLogout = () => {
-    localStorage.setItem("userInfoF", null);
-    dispatch(userLogout());
-    dispatch(addToCart([]));
-    localStorage.removeItem("address");
-    localStorage.removeItem("orderItem");
-    window.location.reload();
-  };
 
   const userData = useSelector((store) => {
     return store.userAuthReducer.user;
   });
 
-  React.useEffect(() => {
-    setForm({ ...userData });
-  }, [userData]);
+  const auth = getAuth();
+
+  // console.log(auth);
 
   const headers = [
     {
@@ -143,6 +123,100 @@ function UserAccount() {
       [name]: value
     }));
   };
+
+  const fetchCustomerData = React.useCallback(
+    async (id) => {
+      const docRef = await getDocument("customers", id);
+      // setData(docRef);
+      setForm({ ...userData, ...docRef });
+      // dispatch(userLogin({ ...userData, ...docRef }));
+    },
+    [userData]
+  );
+
+  // const handleLogout = React.useCallback(() => {
+  //   localStorage.setItem("userInfoF", null);
+  //   dispatch(userLogout());
+  //   dispatch(addToCart([]));
+  //   localStorage.removeItem("address");
+  //   localStorage.removeItem("orderItem");
+  //   localStorage.removeItem("cart");
+  //   window.location.reload();
+  // }, [dispatch]);
+
+  const handleSave = async (header) => {
+    if (header.selector === "email") {
+      await updateEmail(auth.currentUser, form.email)
+        .then(() => {
+          // Email updated!
+          console.log("email updated");
+          // ...
+        })
+        .catch((error) => {
+          // An error occurred
+          console.log(error);
+          // ...
+        });
+    }
+    try {
+      await updateDoc(doc(db, "customers", userData?.id), {
+        ...form
+        // uId: user?.id
+      }).then((value) => {
+        // setForm(initialFormState);
+        setRefreshDataCounter((prev) => prev + 1);
+        setFormDisabled({
+          id: 0,
+          isDisabled: true
+        });
+      });
+      setRefreshDataCounter((prev) => prev + 1);
+      // setForm(initialFormState);
+      // setRefreshDataCounter();
+    } catch (error) {
+      console.error("Error updating document: ", error);
+      // setError("Error updating category");
+    }
+  };
+
+  const onDeactivateAccount = async () => {
+    try {
+      await updateDoc(doc(db, "customers", userData?.id), {
+        accountStatus: "inactive"
+        // uId: userData?.id
+      }).then((value) => {
+        // setForm(initialFormState);
+        setRefreshDataCounter((prev) => prev + 1);
+        setFormDisabled({
+          id: 0,
+          isDisabled: true
+        });
+      });
+      setRefreshDataCounter((prev) => prev + 1);
+      // setForm(initialFormState);
+      // setRefreshDataCounter();
+    } catch (error) {
+      console.error("Error updating document: ", error);
+      // setError("Error updating category");
+    }
+  };
+
+  React.useEffect(() => {
+    if (refreshDataCounter >= 0) {
+      fetchCustomerData(userData?.id);
+    }
+    // setForm({ ...userData });
+    //  else {
+    // }
+  }, [dispatch, fetchCustomerData, refreshDataCounter, userData?.id]);
+
+  // React.useEffect(() => {
+  //   if (form.email !== userData.email) {
+  //     // fetchCustomerData(userData?.id);
+  //     // setForm({ ...data });
+  //     handleLogout();
+  //   }
+  // }, [data, form.email, handleLogout, refreshDataCounter, userData]);
 
   return (
     <div className="w-full bg-white p-5 h-[100vh]">
@@ -240,7 +314,10 @@ function UserAccount() {
                     return <></>;
                   })}
                 {formDisabled.id === header.id && !formDisabled.isDisabled && (
-                  <button className="px-14 py-2 bg-[#f61571] text-white font-bold uppercase">
+                  <button
+                    onClick={() => handleSave(header)}
+                    className="px-14 py-2 bg-[#f61571] text-white font-bold uppercase"
+                  >
                     Save
                   </button>
                 )}
@@ -250,10 +327,16 @@ function UserAccount() {
         })}
       </div>
       <div className="flex flex-col gap-5 items-start mt-10">
-        <button className=" text-blue-500  text-sm font-bold">
+        <button
+          onClick={onDeactivateAccount}
+          className=" text-blue-500  text-sm font-bold"
+        >
           Deactivate Account
         </button>
-        <button className=" text-[#f61571] text-sm font-bold">
+        <button
+          disabled
+          className=" text-[#f61571] disabled:text-gray-300 text-sm font-bold disabled:cursor-not-allowed"
+        >
           Delete Account
         </button>
       </div>

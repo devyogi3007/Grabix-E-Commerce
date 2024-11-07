@@ -78,7 +78,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className=" bg-white shadow-lg h-[100vh] min-w-[200px] w-full">
+    <div className=" bg-white customer-sidebar shadow-lg h-[100vh] min-w-[200px] w-full">
       {/* <hr /> */}
       <div className="">
         <ul className="overflow-y-auto">

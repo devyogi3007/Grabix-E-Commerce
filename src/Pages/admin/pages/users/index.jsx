@@ -2,7 +2,13 @@ import * as React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 
-import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  updateDoc
+} from "firebase/firestore";
 
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -12,6 +18,7 @@ import ViewArrayIcon from "@mui/icons-material/ViewArray";
 import { userColumns, usersColumns } from "../../datatablesource";
 import { db } from "../../firebase";
 import BasicModal from "../../components/modal";
+import { toast } from "react-toastify";
 
 const UserList = () => {
   const initialuser = {
@@ -73,6 +80,38 @@ const UserList = () => {
       console.log(err);
     }
   };
+  const handleStatusChange = async (e, row) => {
+    try {
+      await updateDoc(doc(db, "users", row.id), {
+        status: e.target.checked
+      }).then((querySnapshot) => {
+        setRefreshDataCounter((prev) => ++prev);
+      });
+      toast.success(
+        `Account for ${row?.storeName || ""} ${
+          e.target.checked ? "Deactivated" : "Activated"
+        }`
+      );
+      // .finally(() => setRefreshDataCounter((prev) => ++prev));
+      // setData(data.filter((item) => item.id !== id));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleAccountApprovalChange = async (e, row) => {
+    try {
+      await updateDoc(doc(db, "users", row.id), {
+        approval: e.target.checked
+      }).then((querySnapshot) => {
+        setRefreshDataCounter((prev) => ++prev);
+      });
+      toast.success(`Account approved for ${row?.storeName || ""} `);
+      // .finally(() => setRefreshDataCounter((prev) => ++prev));
+      // setData(data.filter((item) => item.id !== id));
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   React.useEffect(() => {
     if (refreshDataCounter >= 0) {
@@ -82,6 +121,87 @@ const UserList = () => {
   }, [handleClose, refreshDataCounter]);
 
   const actionColumn = [
+    {
+      field: "status",
+      headerName: "Vendor Active Status",
+      width: 220,
+      renderCell: (params) => {
+        return (
+          <div className="flex h-full items-center justify-between">
+            <label className="inline-flex items-center me-5 cursor-pointer">
+              <input
+                type="checkbox"
+                value=""
+                className="sr-only peer"
+                checked={params?.row?.status || false}
+                onChange={(e) => handleStatusChange(e, params?.row)}
+              />
+              <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+            </label>
+          </div>
+        );
+      }
+    },
+    {
+      field: "approval",
+      headerName: "Vendor Account Approval",
+      width: 220,
+      renderCell: (params) => {
+        return (
+          <div
+            style={{
+              // display: "flex",
+              // flexDirection: "column",
+              // // alignItems: 'center',
+              // justifyContent: "center",
+              // whiteSpace: 'normal',
+              lineHeight: 1.2
+              // overflowWrap: 'break-word'
+            }}
+            className="flex h-full items-center justify-between"
+          >
+            {/* <label className="inline-flex items-center me-5 cursor-pointer">
+              <input
+                type="checkbox"
+                value=""
+                className="sr-only peer"
+                checked={params?.row?.status || false}
+                onChange={(e) => handleStatusChange(e, params?.row)}
+              />
+              <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+            </label> */}
+            {!params.row.approval && (
+              <div className="flex flex-col gap-1 w-full">
+                <p className="text-red-400 font-semibold">Not Approved</p>
+                <div className="flex gap-3 justify-end w-full">
+                  <button className="text-xs hover:bg-blue-500 hover:text-white font-semibold px-1 text-blue-500 border border-blue-500">
+                    Hold
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleAccountApprovalChange(
+                        {
+                          target: { checked: true }
+                        },
+                        params?.row
+                      );
+                    }}
+                    className="text-xs hover:bg-green-600 hover:text-white font-semibold px-1 text-green-600 border border-green-600"
+                  >
+                    Approve
+                  </button>
+                </div>
+              </div>
+            )}
+            {params.row.approval && (
+              <p className="p-1 font-semibold bg-[rgb(199_255_219)] text-green-600 border border-green-600">
+                Approved
+              </p>
+            )}
+          </div>
+        );
+      }
+    },
     {
       field: "action",
       headerName: "Action",

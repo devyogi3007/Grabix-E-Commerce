@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import "./category.scss";
 
@@ -13,6 +13,14 @@ import { db } from "../../firebase";
 import BasicModal from "../../components/modal";
 
 import AccordionTable from "./AccordionTable";
+import {
+  FormControl,
+  Input,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select
+} from "@mui/material";
 
 const CategoryList = ({ isAdmin }) => {
   const initialProduct = {
@@ -23,6 +31,8 @@ const CategoryList = ({ isAdmin }) => {
   };
 
   const [data, setData] = React.useState([]);
+  const [searchText, setSearchText] = React.useState("");
+  const [searchHeader, setSearchHeader] = React.useState("");
   const [open, setOpen] = React.useState({
     isOpen: false,
     mode: 1
@@ -114,13 +124,63 @@ const CategoryList = ({ isAdmin }) => {
       }
     }
   ];
+  const filteredProducts =
+    searchText && searchText?.length >= 3
+      ? data.filter((category) =>
+          category?.[searchHeader?.field]
+            .toLowerCase()
+            .includes(searchText.toLowerCase())
+        )
+      : data;
   return (
-    <div className="px-3 h-full w-full flex flex-col gap-5">
+    <div className="px-3 h-full w-full flex flex-col gap-5 overflow-scroll">
       <div className="mb-3">
-        <div className="flex items-center justify-between mt-3">
+        <div className="flex items-center justify-between mt-3 gap-5">
           <p className="text-[#7451f8] font-bold text-xl">Categories</p>
+          <div className="w-full flex items-center gap-5">
+            <FormControl
+              variant="standard"
+              size="small"
+              sx={{ minWidth: "50%" }}
+            >
+              <InputLabel id="searchHeader">Select filter type</InputLabel>
+              <Select
+                labelId="searchHeader"
+                value={searchHeader?.headerName}
+                label="Select filter type"
+                onChange={(e) => {
+                  setSearchHeader(e.target.value);
+                }}
+                // defaultValue={"select"}
+                // className="min-w-[15%]"
+              >
+                {(categoryColumns || []).map((loc) => (
+                  <MenuItem key={loc.field} value={loc}>
+                    {loc.headerName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            {searchHeader && (
+              <Input
+                placeholder={`Search in ${searchHeader?.headerName}`}
+                id="input-with-icon-adornment"
+                className="mt-3"
+                fullWidth
+                onChange={(e) => {
+                  const { value } = e.target;
+                  setSearchText(value);
+                }}
+                endAdornment={
+                  <InputAdornment position="start">
+                    <GridSearchIcon />
+                  </InputAdornment>
+                }
+              />
+            )}
+          </div>
           {isAdmin && (
-            <div className="flex gap-5">
+            <div className="flex gap-5 w-full justify-end">
               <Link
                 to="/pannel/category/new"
                 // onClick={() => handleOpen(1)}
@@ -151,7 +211,7 @@ const CategoryList = ({ isAdmin }) => {
         </div> */}
       </div>
       <AccordionTable
-        data={data || []}
+        data={filteredProducts || []}
         columns={categoryColumns.concat(isAdmin ? actionColumn : [])}
       />
       {open.isOpen && (

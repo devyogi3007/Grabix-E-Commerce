@@ -1,8 +1,8 @@
-.sidebar {
+.customer-sidebar {
   flex: 1;
   // border-left: 0.5px solid black;
-  min-height: 100vh;
-  background-color: #2c2c2c;
+  // min-height: 100vh;
+  // background-color: #2c2c2c;
 
   .top {
     height: 20vh;
@@ -98,11 +98,11 @@
       }
     }
   }
-}
-.link.active {
-  color: #f61571;
-  font-weight: 700;
-  li {
-    background-color: #ffe8f1 !important;
+  .link.active {
+    color: #f61571;
+    font-weight: 700;
+    li {
+      background-color: #ffe8f1 !important;
+    }
   }
 }

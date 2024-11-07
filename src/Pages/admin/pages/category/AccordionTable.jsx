@@ -73,9 +73,9 @@ const AccordionTable = ({ data: tableData = [], columns = [] }) => {
 
   return (
     <div>
-      <div className="border rounded-xl border-black py-3 min-h-[60vh]">
+      <div className="border relative rounded-xl border-black max-h-[calc(100vh_-_13rem)] overflow-scroll">
         <div
-          className={`grid grid-cols-${
+          className={`grid sticky top-0 z-10 bg-white grid-cols-${
             columns?.length || 0
           } gap-5 w-full px-14 py-2`}
         >

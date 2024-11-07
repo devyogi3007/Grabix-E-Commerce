@@ -5,6 +5,7 @@ import "./Admin.scss";
 import { useDispatch } from "react-redux";
 import React from "react";
 import { adminLogin } from "../../Redux/AdminAuth/adminAuth.actions";
+import { ToastContainer } from "react-toastify";
 // import { Outlet } from "react-router-dom";
 
 function Admin() {
@@ -28,6 +29,18 @@ function Admin() {
           </div>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }
