@@ -20,7 +20,7 @@ const AuthProvider = ({ children }) => {
         return data;
       });
       const logedinUser = { ...res?.user, ...user };
-      if (res?.user) {
+      if (res?.user && res?.user?.approval) {
         // setUser(res.data.user);
         setToken(logedinUser);
         localStorage.setItem("adminInfo", JSON.stringify(logedinUser));
@@ -32,6 +32,8 @@ const AuthProvider = ({ children }) => {
         navigate("/pannel/dashboard");
         return;
       }
+      if (!res?.user?.approval)
+        return toast.warn("Please contact admin!");
       throw new Error(res.message);
       // dispatch(adminLogin(logedinUser));
 

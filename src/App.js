@@ -7,6 +7,7 @@ import Signup from "./Pages/admin/pages/signup";
 import * as React from "react";
 import PrivateRoute from "./Routes/AdminPrivateRoute";
 import AuthProvider from "./Pages/admin/context/AuthContext";
+import { ToastContainer } from "react-toastify";
 
 function App() {
 
@@ -26,6 +27,18 @@ function App() {
           </Route>
           <Route path="/pannel/login" element={<Login />} />
         </Routes>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </AuthProvider>
     </BrowserRouter>
   );

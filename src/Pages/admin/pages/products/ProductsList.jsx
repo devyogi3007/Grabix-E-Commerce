@@ -28,6 +28,7 @@ import { useAuth } from "../../context/AuthContext";
 import "./products.scss";
 
 const ProductsList = ({ isAdmin, isVendor }) => {
+  //auth for user
   const auth = useAuth();
 
   const currentUser = auth.token || {};

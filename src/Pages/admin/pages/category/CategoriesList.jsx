@@ -132,6 +132,8 @@ const CategoryList = ({ isAdmin }) => {
             .includes(searchText.toLowerCase())
         )
       : data;
+
+  console.log(filteredProducts);
   return (
     <div className="px-3 h-full w-full flex flex-col gap-5 overflow-scroll">
       <div className="mb-3">

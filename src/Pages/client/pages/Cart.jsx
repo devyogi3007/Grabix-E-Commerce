@@ -24,16 +24,25 @@ import {
 import { db } from "../../../firebase";
 import { formatter, getDocument } from "../../../Helpers/firebaseHelper";
 
+import Modal from "../components/Modal/index";
+import ControlledRadioButtonsGroup from "../components/RadioGroup";
+
 const arr = JSON.parse(localStorage.getItem("address")) || [];
 
-function Cart() {
+function Cart({ payment }) {
   const navigate = useNavigate();
+
   const [cart, setCart] = useLocalStorageState("cart", {
     cart: []
   });
   const [userAddress, setAddress] = useLocalStorageState("address", {});
 
+  //local states
   const [users, setUsers] = React.useState([]);
+  const [value, setValue] = React.useState(userAddress || {});
+  const [addressModalopen, setAddressModalOpen] = React.useState(false);
+  const [addressListForCurrentUser, setAddressListForCurrentUser] =
+    React.useState([]);
 
   const handleRemove = (el) => {
     setCart((prevCart) => {
@@ -43,16 +52,6 @@ function Cart() {
   };
 
   const getProducts = React.useCallback(() => cart.cart || [], [cart.cart]);
-  const totalQuantity =
-    getProducts().reduce((acc, product) => acc + product.quantity, 0) || 0;
-
-  const truncatedstring = (str, num) => {
-    if (str?.length > num) {
-      return str.slice(0, num) + "...";
-    } else {
-      return str;
-    }
-  };
 
   const { totalDiscountedPrice, totalDiscount } = getProducts().reduce(
     (acc, product) => {
@@ -91,10 +90,6 @@ function Cart() {
     return acc + productTotal;
   }, 0);
 
-  function myBtn() {
-    var modal = document.getElementById("myModal");
-    modal.style.display = "block";
-  }
   function closeSpan() {
     var modal = document.getElementById("myModal");
     modal.style.display = "none";
@@ -117,7 +112,7 @@ function Cart() {
     setAddress({ ...userAddress, [x]: e.target.value });
   };
 
-  const handlePayment = () => {
+  const handlePFinalayment = () => {
     const { name, address, city, mob } = userAddress;
     if (
       name.length > 4 &&
@@ -186,256 +181,96 @@ function Cart() {
     return store.userAuthReducer.user;
   });
 
-  // React.useEffect(() => {
-  // addDataInBulk(cart);
-  // getProducts().map((product) => {
-  //   const docRef = updateDoc(collection(db, "cart",), {
-  //     ...product,
-  //     uId: userData?.uid,
-  //     userAddress,
-  //     orderDate: serverTimestamp(),
-  //     totalPrice: product?.price * product?.quantity,
-  //     totalPrice2: product?.price2 * product?.quantity
-  //   });
-  //   console.log("Document written with ID: ", docRef.id);
-  //   return docRef;
-  // });
-  // }, [cart.cart, getProducts, totalPrice, userAddress, userData?.uid]);
+  const fetchAddressesList = React.useCallback(async () => {
+    await getDocs(collection(db, "customer-addresses")).then(
+      (querySnapshot) => {
+        const newData = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id
+        }));
+        setAddressListForCurrentUser(
+          newData?.filter((address) => address.uId === userData?.id)
+        );
+      }
+    );
+  }, [userData?.id]);
+
+  React.useEffect(() => {
+    fetchAddressesList();
+  }, [fetchAddressesList]);
+
+  const handleFinalPayment = async () => {
+    // const { name, address, city, mob } = userAddress;
+    if (true) {
+      try {
+        getProducts().map((product) => {
+          const docRef = addDoc(collection(db, "orders"), {
+            ...product,
+            userId: userData?.uid,
+            userAddress,
+            orderDate: serverTimestamp(),
+            totalPrice
+          });
+          console.log("Document written with ID: ", docRef.id);
+          return docRef;
+          // Clear fields after successful submission
+          // setProduct(initialProduct);
+        });
+        navigate("/payment-form");
+      } catch (e) {
+        console.error("Error adding document: ", e);
+        // setError("Error adding product");
+      }
+      // navigate("/payment-demo");
+    } else {
+      toast.warn("Check Your Details properly!");
+    }
+  };
 
   return (
-    // <>
-    //   {getProducts().length <= 0 ? (
-    //     <Empty />
-    //   ) : (
-    //     <div className="flex flex-col bg-[#F5F1F7] h-[100vh]">
-    //       <div className="flex pl-[13%] pt-4 pb-3">
-    //         <h2 className="text-[24px] font-semibold ">
-    //           Cart ({`${totalQuantity} Item`})
-    //         </h2>
-    //       </div>
-    //       <div className="flex flex-row justify-center items-center gap-x-4">
-    //         <div className="">
-    //           <div className="overflow-y-scroll scroll-smooth h-[300px]">
-    //             {getProducts().map((el) => {
-    //               return (
-    //                 <div className=" border-[1px] border-[#dbdbdb65] shadow-xl w-auto rounded-lg px-6 py-10 flex flex-row justify-between mb-3 bg-[#FFFFFF] ">
-    //                   <div className="flex flex-row">
-    //                     <div>
-    //                       <img src={el.image} alt="img" className="h-[70px] " />
-    //                     </div>
-    //                     <div className="ml-5 flex flex-col font-medium gap-y-2">
-    //                       <div>{truncatedstring(el.name, 40)}</div>
-    //                       <div className="flex flex-row gap-x-2">
-    //                         <div className="font-semibold">
-    //                           ₹
-    //                           {el.price2 ||
-    //                             el.price - (el.price * el?.discount) / 100}
-    //                         </div>
-    //                         <div className="font-medium line-through">
-    //                           ₹{el.price}
-    //                         </div>
-    //                       </div>
-    //                       <div>
-    //                         <p>quantity: {el?.quantity}</p>
-    //                       </div>
-    //                     </div>
-    //                   </div>
-    //                   <div className="pl-60">
-    //                     <button
-    //                       onClick={() => handleRemove(el)}
-    //                       className="bg-[#f61571] text-white px-4 py-2 rounded-lg flex flex-row justify-center items-center gap-x-2"
-    //                     >
-    //                       Remove
-    //                       <MdDelete className="text-[20px]" />{" "}
-    //                     </button>
-    //                   </div>
-    //                 </div>
-    //               );
-    //             })}
-    //           </div>
-    //           <div className="border-[1px] border-[#dbdbdb65] shadow-xl w-auto rounded-lg px-6 py-8 flex flex-col mb-3 bg-[#FFFFFF]">
-    //             <p className="font-semibold text-[17px]">
-    //               Delivery Partner Tip
-    //             </p>
-    //             <p className="text-[#696969] pt-2">
-    //               The entire amount will be sent to your delivery partner
-    //             </p>
-    //             <div className="flex flex-row gap-x-4 pt-3 ">
-    //               <button className="flex flex-row justify-center items-center gap-x-1 px-3 border-2 rounded-xl border-[#f61571]">
-    //                 <GiTwoCoins className="text-[#ffbf3f]" />
-    //                 <span className="text-[#f61571]">₹ 10</span>
-    //               </button>
-    //               <button className="flex flex-row justify-center items-center gap-x-1 px-3 border-2 rounded-xl border-[#f61571]">
-    //                 <GiTwoCoins className="text-[#ffbf3f]" />
-    //                 <span className="text-[#f61571]">₹ 20</span>
-    //               </button>
-    //               <button className="flex flex-row justify-center items-center gap-x-1 px-3 border-2 rounded-xl border-[#f61571]">
-    //                 <GiTwoCoins className="text-[#ffbf3f]" />
-    //                 <span className="text-[#f61571]">₹ 35</span>
-    //               </button>
-    //               <button className="flex flex-row justify-center items-center gap-x-1 px-3 border-2 rounded-xl border-[#f61571]">
-    //                 <GiTwoCoins className="text-[#ffbf3f]" />
-    //                 <span className="text-[#f61571]">₹ 50</span>
-    //               </button>
-    //             </div>
-    //           </div>
-    //           <div>
-    //             <div className="border-[1px] border-[#dbdbdb65] shadow-xl w-auto rounded-lg px-6 py-6 flex flex-row justify-start items-center bg-[#FFFFFF] mb-3">
-    //               <img
-    //                 src="https://cdn.zeptonow.com/app/images/zeptonian-riding.png"
-    //                 alt="img"
-    //                 className="h-[50px] mr-2"
-    //               />
-    //               <p>See how we ensure our delivery partner’s safety</p>
-    //               <a href="/allproducts/Fruits" className="text-[#f61571] pl-2">
-    //                 Learn More
-    //               </a>
-    //             </div>
-    //           </div>
-    //         </div>
-    //         <div>
-    //           <div className="flex flex-col">
-    //             <div className="border-[1px] border-[#dbdbdb65] shadow-xl w-auto rounded-lg px-4 py-6 flex flex-row mb-3 justify-between bg-[#FFFFFF] ">
-    //               <div className="flex flex-col px-4 ">
-    //                 <p className="pt-2">Total MRP</p>
-    //                 <p className="pt-2">Discount on MRP</p>
-    //                 <p className="pt-2 pb-2 border-b-2">Delivery Fee</p>
-    //                 {/* <div className="h-[1px] bg-[#7a7a7a] mt-2 w-[200px]"></div> */}
-    //                 <p className="pt-2">Total Amount</p>
-    //               </div>
-    //               <div className="flex flex-col px-4 text-[#7a7a7a]">
-    //                 <p className="pt-2">₹{totalMRP}</p>
-    //                 <p className="pt-2">-₹{totalDiscount}</p>
-    //                 <p className="pt-2 pb-2 border-b-2">rate</p>
-    //                 <p className="pt-2 text-black">₹{totalPrice}</p>
-    //               </div>
-    //             </div>
-
-    //             <div className="border-[1px] border-[#dbdbdb65] shadow-xl w-auto rounded-lg px-4 py-8 flex flex-col mb-3 justify-center items-center bg-[#FFFFFF] ">
-    //               {arr.length <= 0 ? (
-    //                 <div className="text-[16px] font-medium pb-4 flex flex-row justify-center items-center gap-x-2">
-    //                   <TfiLocationPin className="text-[30px] text-[#f61571]" />
-    //                   <p>Enter Your Address</p>
-    //                 </div>
-    //               ) : (
-    //                 <div className="">
-    //                   <div className="px-4">
-    //                     <span className="font-semibold text-[18px]">
-    //                       Address
-    //                     </span>
-    //                     - {userAddress.name}
-    //                     <br />
-    //                     {userAddress.address},{userAddress.city}
-    //                     <br />
-    //                     {userAddress.mob}"
-    //                   </div>
-    //                   <div>
-    //                     <button
-    //                       onClick={myBtn}
-    //                       className="text-[#f61571] pt-3 pb-3"
-    //                     >
-    //                       CHANGE ADDRESS
-    //                     </button>
-    //                   </div>
-    //                 </div>
-    //               )}
-    //               {arr.length <= 0 ? (
-    //                 <button
-    //                   id="myBtn"
-    //                   className={styles.addressBtn}
-    //                   onClick={myBtn}
-    //                 >
-    //                   Add Address to proceed
-    //                 </button>
-    //               ) : (
-    //                 <button
-    //                   id="myBtn"
-    //                   className={styles.addressBtn}
-    //                   onClick={handlePayment}
-    //                 >
-    //                   Continue To Payment
-    //                 </button>
-    //               )}
-    //             </div>
-    //           </div>
-    //         </div>
-    //       </div>
-    //       <div id="myModal" className={styles.modal}>
-    //         <div className={styles.modal_content}>
-    //           <p>Enter Your Current Address</p>
-    //           <span onClick={closeSpan} className={styles.close}>
-    //             &times;
-    //           </span>
-    //         </div>
-    //         <div className={styles.addressInputBox}>
-    //           <form onSubmit={handleSubmit}>
-    //             <input
-    //               type="text"
-    //               placeholder="Name"
-    //               name="name"
-    //               onChange={handleAddress}
-    //               value={userAddress?.name || ""}
-    //             />
-    //             <input
-    //               type="text"
-    //               placeholder="Address"
-    //               name="address"
-    //               onChange={handleAddress}
-    //               value={userAddress?.address}
-    //             />
-    //             <input
-    //               type="text"
-    //               placeholder="City"
-    //               name="city"
-    //               onChange={handleAddress}
-    //               value={userAddress?.city}
-    //             />
-    //             <input
-    //               type="text"
-    //               placeholder="Mobile No."
-    //               name="mob"
-    //               onChange={handleAddress}
-    //               value={userAddress?.mob}
-    //             />
-    //             <input type="submit" id={styles.submitBtn} />
-    //           </form>
-    //         </div>
-    //       </div>
-    //     </div>
-    //   )}
-    // </>
-
     <>
       {getProducts().length <= 0 && <Empty />}
       {getProducts().length > 0 && (
         <div className="h-full bg-slate-100 w-full p-3">
           <div className="flex w-full gap-3 relative">
             <div className="flex flex-col gap-3 w-4/5">
-              <div className="bg-white shadow-lg w-full flex items-center">
+              <div className="bg-white shadow-sm w-full flex items-center">
                 <p className="text-lg ms-24 font-bold cursor-pointer text-[#f61571] border-b-2 border-[#f61571] py-4 px-28">
-                  Cart <span className="">({getProducts().length})</span>
+                  {payment && "Proceed to payment"}
+                  {!payment && "Cart"}{" "}
+                  {!payment && (
+                    <span className="">({getProducts().length})</span>
+                  )}
                 </p>
               </div>
-              <div className="bg-white shadow-lg w-full p-5 flex justify-between items-center text-sm">
-                <div className="">
-                  <div className="font-bold flex items-center gap-5">
-                    <div>
-                      <span className="font-normal">Deliver to:</span> Yogesh
-                      Mehta, 390019
+              <div className="bg-white shadow-sm w-full p-5 flex justify-between items-center text-sm">
+                {Object.keys(value)?.length > 0 && (
+                  <div className="">
+                    <div className="font-bold flex items-center gap-5">
+                      <div>
+                        <span className="font-normal">Deliver to:</span>{" "}
+                        {value?.name || ""}, {value?.pincode || ""}
+                      </div>
+                      <span className="bg-slate-100 p-1 font-normal uppercase text-xs">
+                        {value?.addressType || ""}
+                      </span>
                     </div>
-                    <span className="bg-slate-100 p-1 font-normal uppercase text-xs">
-                      Home
-                    </span>
+                    <div className="text-slate-400">{value?.address}</div>
                   </div>
-                  <div className="text-slate-400">
-                    102, Today Gift, Ghadiyali pole, Vadodara
+                )}
+                {Object.keys(value)?.length <= 0 && (
+                  <div>
+                    <p className="font-semibold text-md">Select Address</p>
                   </div>
-                </div>
-                <button className="border px-4 py-2 hover:shadow-lg">
+                )}
+                <button
+                  onClick={() => setAddressModalOpen(true)}
+                  className="border px-4 py-2 hover:shadow-sm"
+                >
                   Change
                 </button>
               </div>
-              <div className="bg-white shadow-lg w-full relative">
+              <div className="bg-white shadow-sm w-full relative">
                 {getProducts().map((el) => {
                   console.log(el);
                   return (
@@ -535,14 +370,20 @@ function Cart() {
                 })}
                 <div className="w-full flex justify-end px-5 py-3 sticky bottom-0 bg-white shadow-lg-top text-white p-4">
                   {/* <div class="absolute inset-x-0 -top-3 h-2 shadow-md"></div> */}
-                  <button className="bg-[#f61571] text-normal text-white px-3 py-2">
-                    Continue to payment
+                  <button
+                    onClick={() => {
+                      payment ? handleFinalPayment() : navigate("/payment");
+                    }}
+                    className="bg-[#f61571] text-normal text-white px-3 py-2 min-w-[35%]"
+                  >
+                    {payment && "Place order"}
+                    {!payment && "Continue to payment"}
                   </button>
                 </div>
               </div>
             </div>
             <div className="w-[33%]">
-              <div className="bg-white shadow-lg w-full sticky top-0">
+              <div className="bg-white shadow-sm w-full sticky top-0">
                 <div className="w-full ">
                   <p className="uppercase text-gray-400 text-normal font-bold p-5">
                     Price Details
@@ -582,6 +423,94 @@ function Cart() {
           </div>
         </div>
       )}
+      <Modal
+        open={addressModalopen}
+        handleClose={() => {
+          setAddressModalOpen(false);
+        }}
+      >
+        <>
+          {addressListForCurrentUser.length > 0 && (
+            // <div
+            //   className={`w-full border border-gray-200 py-2 bg-white group`}
+            // >
+
+            //   {addressListForCurrentUser.map((address, index) => {
+            //     return (
+            //       <>
+            //         <div className="p-5 relative">
+            //           <>
+            //             <span
+            //               className={`${
+            //                 address.addressType ? "p-1" : ""
+            //               } bg-slate-100 font-normal uppercase text-xs`}
+            //             >
+            //               {address.addressType || ""}
+            //             </span>
+            //             <div className="flex gap-3 font-bold mt-3">
+            //               <p>{address.name}</p>
+            //               <p>{address.mobile}</p>
+            //             </div>
+            //             <div className="flex gap-3">
+            //               <p>
+            //                 {address.address}, {address.city}, {address.state} -{" "}
+            //                 <span className="font-bold">{address.pincode}</span>
+            //               </p>
+            //             </div>
+            //           </>
+            //         </div>
+            //         {addressListForCurrentUser?.length > 1 &&
+            //           index !== addressListForCurrentUser?.length - 1 && <hr />}
+            //       </>
+            //     );
+            //   })}
+            // </div>
+            <ControlledRadioButtonsGroup
+              header={"Select delivery address"}
+              options={addressListForCurrentUser}
+              modalOprator={(value) => {
+                setAddressModalOpen(value);
+              }}
+              setValue={(value) => {
+                const selectedObj = addressListForCurrentUser.find((option) => {
+                  setAddressModalOpen(false);
+                  return option.id === value;
+                });
+                setValue(selectedObj);
+                setAddress(selectedObj);
+              }}
+              value={value}
+              valueId={"id"}
+              getLabel={(address) => {
+                console.log(address);
+                return (
+                  <>
+                    <div className="flex gap-3 font-bold mt-3">
+                      <p>{address.name}</p>
+                      <p>{address.mobile}</p>
+                      {address.addressType !== "" && (
+                        <span
+                          className={`${
+                            address.addressType ? "p-1" : ""
+                          } bg-slate-100 font-normal uppercase text-xs`}
+                        >
+                          {address.addressType}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex gap-3">
+                      <p>
+                        {address.address}, {address.city}, {address.state} -{" "}
+                        <span className="font-bold">{address.pincode}</span>
+                      </p>
+                    </div>
+                  </>
+                );
+              }}
+            />
+          )}
+        </>
+      </Modal>
     </>
   );
 }

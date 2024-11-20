@@ -57,7 +57,7 @@ function CustomerRoutes() {
             </PrivateRoute>
           }
         />
-        <Route path="/payment" element={<Payment />} />
+        <Route path="/payment" element={<Cart payment={true} />} />
         <Route path="/payment-demo" element={<PaymentSuccess />} />
         <Route path="/payment-form" element={<PaymentForm />} />
       </Routes>
