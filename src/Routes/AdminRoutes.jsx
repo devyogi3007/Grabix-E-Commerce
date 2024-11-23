@@ -30,6 +30,7 @@ import UserList from "../Pages/admin/pages/users";
 import Logout from "../Pages/admin/pages/signup/logout";
 import Profile from "../Pages/admin/pages/profile";
 import CustomerList from "../Pages/admin/pages/customers";
+import Upload from "../Pages/admin/pages/uplaod";
 
 function AdminRoutes() {
   const auth = useAuth();
@@ -41,7 +42,7 @@ function AdminRoutes() {
 
   // console.log(currentUserLoggedInStatus);
   const RequireAuth = ({ children }) => {
-    return currentUser ? children : <Navigate to="/pannel/login" />;
+    return currentUser ? children : <Navigate to="/panel/login" />;
   };
 
   // const { darkMode } = useContext(DarkModeContext);
@@ -108,6 +109,27 @@ function AdminRoutes() {
             element={
               <RequireAuth>
                 <AddProduct mode={1} isAdmin={isAdmin} />
+              </RequireAuth>
+            }
+          />
+          <Route path="edit">
+            <Route
+              path=":productId"
+              element={
+                <RequireAuth>
+                  <AddProduct mode={2} />
+                </RequireAuth>
+              }
+            />
+          </Route>
+        </Route>
+        <Route path="bulk/upload">
+          <Route index />
+          <Route
+            path=":page"
+            element={
+              <RequireAuth>
+                <Upload />
               </RequireAuth>
             }
           />
@@ -236,7 +258,7 @@ function AdminRoutes() {
         </Route>
         {isAdmin && <Route path="banners" element={<BannerPage />} />}
         <Route path="logout" element={<Logout />} />
-        <Route path="/pannel" element={<Navigate to="/pannel/dashboard" />} />
+        <Route path="/panel" element={<Navigate to="/panel/dashboard" />} />
         <Route
           path="profile"
           element={

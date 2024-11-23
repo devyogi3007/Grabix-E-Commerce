@@ -70,7 +70,7 @@ const Sidebar = () => {
   return (
     <div className="sidebar min-w-[200px]">
       <div className="top">
-        <Link to="/pannel" style={{ textDecoration: "none" }}>
+        <Link to="/panel" style={{ textDecoration: "none" }}>
           <span className="logo">GRABIX</span>
           {/* <img src="../../assets/logo.png" /> */}
         </Link>

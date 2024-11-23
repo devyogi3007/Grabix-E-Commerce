@@ -91,7 +91,7 @@ const CategoryList = ({ isAdmin }) => {
         return (
           <div className="flex gap-5 h-full items-center">
             <Link
-              to={`/pannel/category/edit/${params.row.id}`}
+              to={`/panel/category/edit/${params.row.id}`}
               style={{ textDecoration: "none" }}
             >
               <div
@@ -119,7 +119,7 @@ const CategoryList = ({ isAdmin }) => {
         <p className="text-[#7451f8] font-bold text-xl">Sub Categories</p>
         {isAdmin && (
           <Link
-            to="/pannel/category/new"
+            to="/panel/category/new"
             // onClick={() => handleOpen(1)}
             className="border px-3 py-2 rounded-md text-[#7451f8] border-[#7451f8]"
           >

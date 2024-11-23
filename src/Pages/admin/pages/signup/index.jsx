@@ -53,9 +53,9 @@ const Signup = ({ mode = 1 }) => {
       // Clear fields after successful submission
       //   setProduct(initialProduct);
       if (mode === 2) {
-        navigate("/pannel/users");
+        navigate("/panel/users");
       } else {
-        navigate("/pannel/login");
+        navigate("/panel/login");
       }
       setForm(initialState);
       console.log("Signed Up:", user);

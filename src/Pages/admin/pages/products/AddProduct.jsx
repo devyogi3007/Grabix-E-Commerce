@@ -112,7 +112,7 @@ const AddProduct = React.memo((props) => {
           vId: isAdmin ? product?.userId : currentUser?.id
         }).then((value) => {
           setProduct(initialProduct);
-          navigate("/pannel/products");
+          navigate("/panel/products");
         });
         setProduct(initialProduct);
       } catch (error) {
@@ -139,7 +139,7 @@ const AddProduct = React.memo((props) => {
         // Clear fields after successful submission
         setProduct(initialProduct);
 
-        navigate("/pannel/products");
+        navigate("/panel/products");
       } catch (e) {
         console.error("Error adding document: ", e);
         setError("Error adding product");
@@ -605,7 +605,7 @@ const AddProduct = React.memo((props) => {
           variant="outlined"
           color="secondary"
           component={Link}
-          to="/pannel/products"
+          to="/panel/products"
         >
           Cancel
         </Button>

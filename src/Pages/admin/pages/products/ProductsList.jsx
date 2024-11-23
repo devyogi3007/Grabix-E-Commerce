@@ -142,7 +142,7 @@ const ProductsList = ({ isAdmin, isVendor }) => {
         return (
           <div className="flex gap-5 h-full items-center">
             <Link
-              to={`/pannel/products/${params.row.id}`}
+              to={`/panel/products/${params.row.id}`}
               style={{ textDecoration: "none" }}
             >
               <div className="text-[#7451f8]">
@@ -150,7 +150,7 @@ const ProductsList = ({ isAdmin, isVendor }) => {
               </div>
             </Link>
             <Link
-              to={`/pannel/products/edit/${params.row.id}`}
+              to={`/panel/products/edit/${params.row.id}`}
               style={{ textDecoration: "none" }}
             >
               <div
@@ -183,6 +183,7 @@ const ProductsList = ({ isAdmin, isVendor }) => {
       })
     : data;
 
+  console.log(filteredProducts);
   return (
     <div className="px-3 h-full w-full">
       <div className="flex items-center my-3 gap-5">
@@ -227,7 +228,7 @@ const ProductsList = ({ isAdmin, isVendor }) => {
         </div>
         <div className="w-full flex justify-end">
           <Link
-            to="/pannel/products/new"
+            to="/panel/products/new"
             // onClick={() => handleOpen(1)}
             className="border px-3 py-2 rounded-md text-[#7451f8] border-[#7451f8]"
           >

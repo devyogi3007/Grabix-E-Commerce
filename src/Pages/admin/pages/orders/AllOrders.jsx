@@ -84,7 +84,7 @@ const OrdersList = ({ isAdmin }) => {
         return (
           <div className="flex gap-5 h-full items-center">
             <Link
-              to={`/pannel/orders/${params.row.id}`}
+              to={`/panel/orders/${params.row.id}`}
               style={{ textDecoration: "none" }}
             >
               <div className="text-[#7451f8]">

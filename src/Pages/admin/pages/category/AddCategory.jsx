@@ -100,7 +100,7 @@ const AddCategory = ({ mode = 1, route = "category" }) => {
             route === "category" ? "0" : category?.parentCategoryId
         }).then((value) => {
           setCategory(initialCategory);
-          navigate("/pannel/category");
+          navigate("/panel/category");
         });
         setCategory(initialCategory);
       } catch (error) {
@@ -119,7 +119,7 @@ const AddCategory = ({ mode = 1, route = "category" }) => {
         // Clear fields after successful submission
         setCategory(initialCategory);
 
-        navigate("/pannel/category");
+        navigate("/panel/category");
       } catch (e) {
         console.error("Error adding document: ", e);
         setError("Error adding category");
@@ -290,7 +290,7 @@ const AddCategory = ({ mode = 1, route = "category" }) => {
           variant="outlined"
           color="secondary"
           component={Link}
-          to={"/pannel/category"}
+          to={"/panel/category"}
         >
           Cancel
         </Button>

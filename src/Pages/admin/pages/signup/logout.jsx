@@ -15,7 +15,7 @@ const Logout = () => {
   //   function () {
   //     console.log("Signed Out");
   //     dispatch(adminLogin({}));
-  //     navigate("/pannel/login");
+  //     navigate("/panel/login");
   //     setStatus("Success");
   //   },
   //   function (error) {

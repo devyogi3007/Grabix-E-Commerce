@@ -92,7 +92,7 @@ const CustomerList = () => {
         return (
           <div className="flex gap-5 h-full items-center">
             <Link
-              to={`/pannel/customers/${params.row.id}`}
+              to={`/panel/customers/${params.row.id}`}
               style={{ textDecoration: "none" }}
             >
               <div className="text-[#7451f8]">
@@ -100,7 +100,7 @@ const CustomerList = () => {
               </div>
             </Link>
             {/* <Link
-              to={`/pannel/customers/edit/${params.row.id}`}
+              to={`/panel/customers/edit/${params.row.id}`}
               style={{ textDecoration: "none" }}
             >
               <div
@@ -128,7 +128,7 @@ const CustomerList = () => {
       <div className="flex items-center justify-between my-3">
         <p className="text-[#7451f8] font-bold text-xl">Customers</p>
         {/* <Link
-          to="/pannel/users/new"
+          to="/panel/users/new"
           // onClick={() => handleOpen(1)}
           className="border px-3 py-2 rounded-md text-[#7451f8] border-[#7451f8]"
         >

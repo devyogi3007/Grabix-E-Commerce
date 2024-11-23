@@ -1,10 +1,11 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useContext, createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 import { auth } from "../firebase";
 import { getDocument } from "../../../Helpers/firebaseHelper";
 import { adminLogin } from "../../../Redux/AdminAuth/adminAuth.actions";
-import { toast } from "react-toastify";
 
 const AuthContext = createContext();
 
@@ -20,19 +21,20 @@ const AuthProvider = ({ children }) => {
         return data;
       });
       const logedinUser = { ...res?.user, ...user };
-      if (res?.user && res?.user?.approval) {
+      console.log(user)
+      if (res?.user && user?.approval) {
         // setUser(res.data.user);
         setToken(logedinUser);
         localStorage.setItem("adminInfo", JSON.stringify(logedinUser));
         toast.success("Login");
         if (logedinUser?.role?.id === 1) {
           // setLoading(false);
-          navigate("/pannel/dashboard");
+          navigate("/panel/dashboard");
         }
-        navigate("/pannel/dashboard");
+        navigate("/panel/dashboard");
         return;
       }
-      if (!res?.user?.approval)
+      if (!user?.approval)
         return toast.warn("Please contact admin!");
       throw new Error(res.message);
       // dispatch(adminLogin(logedinUser));
@@ -49,7 +51,7 @@ const AuthProvider = ({ children }) => {
     // setUser(null);
     setToken({});
     localStorage.removeItem("adminInfo");
-    navigate("/pannel/login");
+    navigate("/panel/login");
   };
 
   return (

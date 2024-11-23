@@ -78,7 +78,7 @@ const Datatable = () => {
         return (
           <div className="flex gap-5 h-full items-center">
             <Link
-              to={`/pannel/products/${params.row.id}`}
+              to={`/panel/products/${params.row.id}`}
               style={{ textDecoration: "none" }}
             >
               <div className="text-[#7451f8]">
@@ -107,7 +107,7 @@ const Datatable = () => {
       <div className="flex items-center justify-between my-3">
         <p className="text-[#7451f8] font-bold text-xl">Vendors</p>
         <Link
-          to="/pannel/users/new"
+          to="/panel/users/new"
           className="border px-3 py-2 rounded-md text-[#7451f8] border-[#7451f8]"
         >
           Add Vendor

@@ -25,7 +25,7 @@ const Login = () => {
 
   React.useEffect(() => {
     if (auth?.token?.id) {
-      navigate("/pannel/dashboard");
+      navigate("/panel/dashboard");
     }
   }, [auth?.token?.id, navigate]);
 

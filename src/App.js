@@ -18,14 +18,14 @@ function App() {
 
           <Route path="/*" element={<Customer />} />
           <Route path="/store/apply" element={<Signup />} />
-          <Route path="/pannel" element={<Navigate to="/pannel/login" />} />
+          <Route path="/panel" element={<Navigate to="/panel/login" />} />
 
           <Route element={<PrivateRoute />}>
-            {/* {isAdmin && <Route path="/pannel" element={<Navigate to="/pannel/dashboard" />} />} */}
-            <Route path="/pannel" element={<Navigate to="/pannel/dashboard" />} />
-            <Route path="/pannel/*" element={<Admin />} />
+            {/* {isAdmin && <Route path="/panel" element={<Navigate to="/panel/dashboard" />} />} */}
+            <Route path="/panel" element={<Navigate to="/panel/dashboard" />} />
+            <Route path="/panel/*" element={<Admin />} />
           </Route>
-          <Route path="/pannel/login" element={<Login />} />
+          <Route path="/panel/login" element={<Login />} />
         </Routes>
         <ToastContainer
           position="top-right"

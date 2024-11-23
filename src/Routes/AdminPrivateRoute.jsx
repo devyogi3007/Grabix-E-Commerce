@@ -5,7 +5,7 @@ import { useAuth } from "../Pages/admin/context/AuthContext";
 const PrivateRoute = () => {
   const user = useAuth();
   //   console.log(user.token);
-  if (!user.token?.id) return <Navigate to="/pannel/login" />;
+  if (!user.token?.id) return <Navigate to="/panel/login" />;
   return <Outlet />;
 };
 

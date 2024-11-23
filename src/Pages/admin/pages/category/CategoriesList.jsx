@@ -102,7 +102,7 @@ const CategoryList = ({ isAdmin }) => {
         return (
           <div className="flex gap-5 items-center">
             <Link
-              to={`/pannel/${params.route}/edit/${params.row.id}`}
+              to={`/panel/${params.route}/edit/${params.row.id}`}
               style={{ textDecoration: "none" }}
             >
               <div
@@ -184,14 +184,14 @@ const CategoryList = ({ isAdmin }) => {
           {isAdmin && (
             <div className="flex gap-5 w-full justify-end">
               <Link
-                to="/pannel/category/new"
+                to="/panel/category/new"
                 // onClick={() => handleOpen(1)}
                 className="border px-3 py-2 rounded-md text-[#7451f8] border-[#7451f8]"
               >
                 Add Category
               </Link>
               <Link
-                to="/pannel/sub-category/new"
+                to="/panel/sub-category/new"
                 // onClick={() => handleOpen(1)}
                 className="border px-3 py-2 rounded-md text-[#7451f8] border-[#7451f8]"
               >
