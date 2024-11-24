@@ -11,13 +11,14 @@ const Upload = () => {
   const { page } = useParams();
   const [uploadedData, setUploadedData] = React.useState(null);
   const [error, setError] = React.useState(null);
-  const [file, setFile] = React.useState();
-  const downloadTemplate = () => {
-    // Replace with the correct template file path
+  const downloadTemplate = (type) => {
     const link = document.createElement('a');
-    link.href = '/path/to/template.xlsx'; // Update this with your actual file path
+    link.href = type === 2 ? '' : ''; // Update this with your actual file path
     link.download = 'Proportion_Template.xlsx';
     link.click();
+    if (type === 2) {
+    }
+    // Replace with the correct template file path
   };
 
   const handleFileUpload = (file) => {
@@ -36,6 +37,7 @@ const Upload = () => {
         const sheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(sheet);
         console.log(workbook);
+        console.log(jsonData);
         setUploadedData(jsonData);
         setError(null);
       } catch (err) {
@@ -78,6 +80,34 @@ const Upload = () => {
     },
     { header: 'STEP 3', title: 'Validate data and complete import' }
   ];
+
+  function toCamelCaseKeys(obj) {
+    // Helper function to convert a string to camel case
+    const toCamelCase = (str) => {
+      return str
+        .split(' ') // Split string into words
+        .map(
+          (word, index) =>
+            index === 0
+              ? word.toLowerCase() // First word in lowercase
+              : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() // Capitalize subsequent words
+        )
+        .join(''); // Join the words together
+    };
+
+    // Convert each key of the object
+    return Object.keys(obj).reduce((acc, key) => {
+      const camelCaseKey = toCamelCase(key); // Convert key to camel case
+      acc[camelCaseKey] = obj[key]; // Assign the value to the new key
+      return acc;
+    }, {});
+  }
+
+  const finalData = uploadedData?.map((item) => toCamelCaseKeys(item));
+
+  const submitData = async () => {
+    console.log(finalData);
+  };
 
   return (
     <div>
@@ -124,9 +154,15 @@ const Upload = () => {
           accept={'.xlsx, .xls, .csv'}
           onChange={handleFileInput}
         />
-        <div className='flex justify-end'>
+        <div className='flex justify-end gap-5'>
           <button className='px-5 py-1 bg-slate-400 text-white rounded hover:bg-gray-800'>
             Reset
+          </button>
+          <button
+            onClick={() => submitData()}
+            className='px-5 py-1 bg-[#7451f8] text-white rounded hover:bg-gray-800'
+          >
+            Submit
           </button>
         </div>
       </div>
@@ -183,7 +219,7 @@ export default Upload;
 const Card = ({ header, title }) => {
   return (
     <div className='bg-gray-200 text-gray-500 p-3 w-full flex flex-col items-center'>
-      <h3>{header}</h3>
+      <h3 className='font-bold'>{header}</h3>
       <p className='text-center'>{title}</p>
     </div>
   );

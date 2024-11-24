@@ -1,27 +1,28 @@
-import React, { useState } from "react";
-import styles from "../styles/Login.module.css";
-import { auth } from "../../../firebase";
+import React, { useState } from 'react';
+import styles from '../styles/Login.module.css';
+import { auth } from '../../../firebase';
 import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup
-} from "@firebase/auth";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { userLogin } from "../../../Redux/UserAuth/userAuth.actions";
-import { FcGoogle } from "react-icons/fc";
-import "react-toastify/dist/ReactToastify.css";
+} from '@firebase/auth';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { userLogin } from '../../../Redux/UserAuth/userAuth.actions';
+import { FcGoogle } from 'react-icons/fc';
+import 'react-toastify/dist/ReactToastify.css';
 
-import { toast } from "react-toastify";
-import { getDocument } from "../../../Helpers/firebaseHelper";
-import useLocalStorageState from "use-local-storage-state";
+import { toast } from 'react-toastify';
+import { getDocument } from '../../../Helpers/firebaseHelper';
+import useLocalStorageState from 'use-local-storage-state';
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [isLoading, setLoading] = useState(false);
-  const [cart, setCart] = useLocalStorageState("cart", {
+  const [showPass, setShowPass] = useState(false);
+  const [cart, setCart] = useLocalStorageState('cart', {
     cart: []
   });
 
@@ -33,13 +34,13 @@ function Login() {
   const validateForm = () => {
     let isValid = true;
     if (!email || !password) {
-      setError("Please fill all the credentials!");
+      setError('Please fill all the credentials!');
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setError("Invalid Email address!!");
+      setError('Invalid Email address!!');
       isValid = false;
     } else if (password.length < 7) {
-      setError("Password must be at least 7 characters!");
+      setError('Password must be at least 7 characters!');
       isValid = false;
     }
     return isValid;
@@ -54,36 +55,36 @@ function Login() {
   const signin = async (e) => {
     e.preventDefault();
 
-    setError("");
+    setError('');
     if (validateForm()) {
       setLoading(true);
       try {
         let res = await signInWithEmailAndPassword(auth, email, password);
         // console.log(res)
         const { uid } = res?.user;
-        const user = await getDocument("customers", uid).then((data) => {
+        const user = await getDocument('customers', uid).then((data) => {
           return data;
         });
         const logedinUser = { ...res?.user, ...user };
         if (user?.id) {
           dispatch(userLogin(logedinUser));
-          localStorage.setItem("userInfoF", JSON.stringify(logedinUser));
+          localStorage.setItem('userInfoF', JSON.stringify(logedinUser));
           setCart({
             cart: []
           });
-          toast.success("Login");
+          toast.success('Login');
           setLoading(false);
         }
         // navigate("/");
       } catch (error) {
         setLoading(false);
         if (/^No such document/.test(error.message)) {
-          console.log("Not a registered user");
-          setError("User not registerd");
-          toast.warn("Not a registerd user");
+          console.log('Not a registered user');
+          setError('User not registerd');
+          toast.warn('Not a registerd user');
           // return;
         } else {
-          toast.warn("SignIn Failed!", error.message);
+          toast.warn('SignIn Failed!', error.message);
           console.log(error);
           setError(error?.message);
         }
@@ -95,8 +96,8 @@ function Login() {
     try {
       let res = await signInWithPopup(auth, provider);
       dispatch(userLogin(res.user));
-      localStorage.setItem("userInfoF", JSON.stringify(res.user));
-      navigate("/");
+      localStorage.setItem('userInfoF', JSON.stringify(res.user));
+      navigate('/');
     } catch (error) {
       console.log(error);
     }
@@ -104,7 +105,7 @@ function Login() {
 
   React.useEffect(() => {
     if (userData?.uid) {
-      navigate("/");
+      navigate('/');
     }
   }, [navigate, userData?.uid]);
 
@@ -118,52 +119,66 @@ function Login() {
 
           <input
             className={styles.Input}
-            type="email"
-            placeholder="Enter your email"
-            name="email"
+            type='email'
+            placeholder='Enter your email'
+            name='email'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
 
-          <input
-            className={styles.Input}
-            type="password"
-            placeholder="Enter your password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <div className='w-full'>
+            <input
+              className={styles.Input}
+              type={showPass ? 'text' : 'password'}
+              placeholder='Enter your password'
+              name='password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button
+              type='button'
+              id='togglePassword'
+              className='focus:outline-none -ml-8'
+              onClick={() => setShowPass((prev) => !prev)}
+            >
+              <img
+                src='https://media.geeksforgeeks.org/wp-content/uploads/20240227164304/visible.png'
+                alt=''
+                className='w-4'
+              />
+            </button>
+          </div>
 
           {error && (
             <div className={styles.error}>
-              {"* "}
+              {'* '}
               {error}
             </div>
           )}
 
           <div className={styles.signupBox}>
             <p>
-              New User? <Link to="/signup">SignUp</Link>{" "}
+              New User? <Link to='/signup'>SignUp</Link>{' '}
             </p>
           </div>
 
-          <button type="submit" className={styles.signupbtn}>
+          <button type='submit' className={styles.signupbtn}>
             Sign In
           </button>
 
           <div>
-            <h1 className="text-[18px] font-semibold mt-2">Or</h1>
+            <h1 className='text-[18px] font-semibold mt-2'>Or</h1>
           </div>
 
           <button
             onClick={handleGoogle}
-            type="submit"
+            type='submit'
             className={styles.signGoogle}
           >
             Login with Google
-            <FcGoogle className="text-[21px]" />
+            <FcGoogle className='text-[21px]' />
           </button>
         </form>
       )}

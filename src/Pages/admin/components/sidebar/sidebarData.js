@@ -33,8 +33,15 @@ const sidebarList = [
     label: "Category",
     icon: "category",
     route: "/panel/category",
-    roles: [1, 2],
+    roles: [1],
     heading: 'Product Management'
+  },
+  {
+    moduleName: "Bulk Upload Categories",
+    label: "Bulk Upload Categories",
+    icon: "bulk-upload-Categories",
+    route: "/panel/bulk/upload/categories",
+    roles: [1, 2]
   },
   {
     moduleName: "Attributes",
