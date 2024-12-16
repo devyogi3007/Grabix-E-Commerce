@@ -9,6 +9,8 @@ const ProductOverView = () => {
 
   //   const getDataFromDb = React.useCallback((productId) => {}, []);
 
+  console.log(data);
+
   React.useEffect(() => {
     getDocument("products", productId).then((data) => setData(data));
   }, [productId]);
@@ -20,10 +22,8 @@ const ProductOverView = () => {
       </p>
       <div className="px-5 h-full flex">
         <div className="h-full">
-          {!data?.image && (
-            <div className="h-[200px] mx-2 w-[200px] border-2 shadow-md flex items-center justify-center">
-              <p className="text-[#7551f88e]">Product Image</p>
-            </div>
+        {!data?.image && (
+           <></>
           )}
           {data?.image && (
             <img
@@ -33,6 +33,19 @@ const ProductOverView = () => {
               style={{ marginTop: 20, maxWidth: 350 }}
             />
           )}
+          {!data?.images?.length && (
+            <div className="h-[200px] mx-2 w-[200px] border-2 shadow-md flex items-center justify-center">
+              <p className="text-[#7551f88e]">Product Image</p>
+            </div>
+          )}
+          {data?.images && data?.images?.map(image => (
+            <img
+              src={image?.data || ""}
+              alt=""
+              className="h-[200px] mx-2 w-[200px] object-contain shadow-md flex items-center justify-center"
+              style={{ marginTop: 20, maxWidth: 350 }}
+            />
+          ))}
         </div>
         <div className="w-full border-l">
           <p className="text-[#7451f8] border-b px-2 text-xl pb-3 ">Details</p>
@@ -44,6 +57,7 @@ const ProductOverView = () => {
                 return a.localeCompare(b); // Alphabetical sort for the rest
               })
               .map((item) => {
+                if (item === "images") return <></>;
                 if (item === "image") return <></>;
                 if (item === "parentCategoryId") return <></>;
                 if (item === "categoryName") return <></>;

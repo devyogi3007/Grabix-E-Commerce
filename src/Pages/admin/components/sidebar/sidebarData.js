@@ -36,13 +36,13 @@ const sidebarList = [
     roles: [1],
     heading: 'Product Management'
   },
-  {
-    moduleName: "Bulk Upload Categories",
-    label: "Bulk Upload Categories",
-    icon: "bulk-upload-Categories",
-    route: "/panel/bulk/upload/categories",
-    roles: [1, 2]
-  },
+  // {
+  //   moduleName: "Bulk Upload Categories",
+  //   label: "Bulk Upload Categories",
+  //   icon: "bulk-upload-Categories",
+  //   route: "/panel/bulk/upload/categories",
+  //   roles: [1, 2]
+  // },
   {
     moduleName: "Attributes",
     label: "Attributes",
@@ -64,13 +64,13 @@ const sidebarList = [
     route: "/panel/products",
     roles: [1, 2]
   },
-  {
-    moduleName: "Bulk Upload Products",
-    label: "Bulk Upload Products",
-    icon: "bulk-upload-products",
-    route: "/panel/bulk/upload/products",
-    roles: [1, 2]
-  },
+  // {
+  //   moduleName: "Bulk Upload Products",
+  //   label: "Bulk Upload Products",
+  //   icon: "bulk-upload-products",
+  //   route: "/panel/bulk/upload/products",
+  //   roles: [1, 2]
+  // },
   // {
   //   moduleName: "Add new Product",
   //   label: "Products",

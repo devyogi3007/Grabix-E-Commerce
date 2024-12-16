@@ -13,6 +13,11 @@ import PaymentSuccess from "../Pages/client/pages/PaymentSuccess";
 import Orders from "../Pages/client/pages/Orders";
 import PaymentForm from "../Pages/client/pages/PaymentForm";
 import Address from "../Pages/client/pages/Address";
+import AboutUs from "../Pages/client/pages/AboutUs";
+import PrivacyPolicy from "../Pages/client/pages/PrivacyPolicy";
+import TermsOfUse from "../Pages/client/pages/TermsOfUse";
+import CancellationPolicy from "../Pages/client/pages/CancellationPolicy";
+import ShippingPolicy from "../Pages/client/pages/ShippingPolicy";
 
 function CustomerRoutes() {
   return (
@@ -60,6 +65,11 @@ function CustomerRoutes() {
         <Route path="/payment" element={<Cart payment={true} />} />
         <Route path="/payment-demo" element={<PaymentSuccess />} />
         <Route path="/payment-form" element={<PaymentForm />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfUse />} />
+        <Route path="/cancellation-policy" element={<CancellationPolicy />} />
+        <Route path="/shipping-policy" element={<ShippingPolicy />} />
       </Routes>
     </>
   );
