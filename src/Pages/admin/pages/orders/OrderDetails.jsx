@@ -278,7 +278,7 @@ function OrderDetails() {
                   </div>
                 </div>
 
-                <div class="flex justify-center text-gray-800 text-gray-800 md:justify-start items-center space-x-4 py-4 border-b border-gray-200 w-full">
+                {/* <div class="flex justify-center text-gray-800 text-gray-800 md:justify-start items-center space-x-4 py-4 border-b border-gray-200 w-full">
                   <img
                     class="dark:hidden"
                     src="https://tuk-cdn.s3.amazonaws.com/can-uploader/order-summary-3-svg1.svg"
@@ -292,7 +292,7 @@ function OrderDetails() {
                   <p class="cursor-pointer text-sm leading-5 ">
                     {data?.userAddress?.mob}
                   </p>
-                </div>
+                </div> */}
               </div>
               <div class="flex justify-between xl:h-full items-stretch w-full flex-col mt-6 md:mt-0">
                 <div class="flex justify-center md:justify-start xl:flex-col flex-col md:space-x-6 lg:space-x-8 xl:space-x-0 space-y-4 xl:space-y-12 md:space-y-0 md:flex-row items-center md:items-start">
@@ -313,11 +313,11 @@ function OrderDetails() {
                     </p>
                   </div>
                 </div>
-                <div class="flex w-full justify-center items-center md:justify-start md:items-start">
+                {/* <div class="flex w-full justify-center items-center md:justify-start md:items-start">
                   <button class="hover:bg-black dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 py-5 w-96 md:w-full bg-gray-800 text-base font-medium leading-4 text-white">
                     Edit Order
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

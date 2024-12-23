@@ -18,7 +18,7 @@ const ExploreNewCategories = () => {
 
   return (
     <div>
-      <div className="flex flex-row justify-between ml-0 pb-6 px-10 sm:ml-0">
+      {/* <div className="flex flex-row justify-between ml-0 pb-6 px-10 sm:ml-0">
         <h2 className="text-md sm:text-xl font-semibold">Recent Searches</h2>
         <a
           href="/"
@@ -53,9 +53,9 @@ const ExploreNewCategories = () => {
             className="text-[40px] text-black cursor-pointer opacity-50 hover:opacity-100 mt-5"
           />
         </div>
-      </div>
+      </div> */}
       <MostPopular />
-      <NewProducts />
+      {/* <NewProducts /> */}
       {/* Banner 3 */}
       {/* <div className="mt-12 mb-6">
         <img

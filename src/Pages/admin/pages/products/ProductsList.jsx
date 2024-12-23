@@ -12,7 +12,7 @@ import {
   TextField
 } from "@mui/material";
 
-import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
 
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -51,45 +51,31 @@ const ProductsList = ({ isAdmin, isVendor }) => {
   const [product, setProduct] = React.useState(initialProduct);
   const [refreshDataCounter, setRefreshDataCounter] = React.useState(0);
 
-  const fetchProductsList = async () => {
-    await getDocs(collection(db, "products")).then((querySnapshot) => {
-      const newData = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id
-      }));
-      if (isVendor) {
-        setData(newData.filter((item) => item.vId === currentUser?.uid)).map(
-          (item) => {
-            if (item?.parentCategoryName) {
-              return {
-                ...item,
-                category: `${item?.parentCategoryName} / ${item?.categoryName}`
-              };
-            }
-            return {
-              ...item,
-              category: `${item?.categoryName}`
-            };
-          }
-        );
-      } else {
-        setData(
-          newData.map((item) => {
-            if (item?.parentCategoryName) {
-              return {
-                ...item,
-                category: `${item?.parentCategoryName} / ${item?.categoryName}`
-              };
-            }
-            return {
-              ...item,
-              category: `${item?.categoryName}`
-            };
-          })
-        );
+  const fetchCurrentVendorProducts = React.useCallback(async () => {
+    try {
+      const productsQuery = query(
+        collection(db, 'products'),
+        (currentUser?.role?.id === 2 && where('vId', '==', currentUser?.id)) // Use the '==' operator
+      );
+      const productsSnapshot = await getDocs(productsQuery);
+
+      if (productsSnapshot.empty) {
+        console.log('No products found for active vendors.');
+        return;
       }
-    });
-  };
+
+      // Process and log products
+      const products = productsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setData(products);
+      console.log('Products for active vendors: ', products);
+      return products; // Return the products if needed elsewhere
+    } catch (error) {
+      console.error('Error fetching products: ', error);
+    }
+  }, [currentUser?.id]);
 
   const handleOpen = (mode) => setOpen({ isOpen: true, mode });
   const handleClose = React.useCallback(() => {
@@ -128,10 +114,10 @@ const ProductsList = ({ isAdmin, isVendor }) => {
 
   React.useEffect(() => {
     if (refreshDataCounter >= 0) {
-      fetchProductsList();
+      fetchCurrentVendorProducts();
       handleClose();
     }
-  }, [handleClose, refreshDataCounter]);
+  }, [handleClose, refreshDataCounter, fetchCurrentVendorProducts]);
 
   const actionColumn = [
     {

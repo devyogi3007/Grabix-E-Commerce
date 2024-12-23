@@ -74,22 +74,11 @@ const CancellationPolicy = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white mt-8">
-        <div className="container mx-auto px-4 py-6 flex justify-between items-center">
-          <div className="text-xl font-bold">GRABIX</div>
-          <nav>
-            <ul className="flex space-x-4">
-              <li><a href="#" className="hover:text-orange-500">Home</a></li>
-              <li><a href="#" className="hover:text-orange-500">Customer Support</a></li>
-              <li><a href="#" className="hover:text-orange-500">Careers</a></li>
-              <li><a href="#" className="hover:text-orange-500">Download App</a></li>
-            </ul>
-          </nav>
-        </div>
+      {/* <footer className="bg-gray-800 text-white mt-8">
         <div className="text-center text-gray-400 py-2">
-          &copy; Designed by Wolgan
+          &copy; &nbsp; <b>GRABIX TECHSOLUTIONS PVT LTD</b>
         </div>
-      </footer>
+      </footer> */}
     </div>
   );
 };

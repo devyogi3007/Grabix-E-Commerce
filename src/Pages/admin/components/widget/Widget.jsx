@@ -10,10 +10,11 @@ import StoreIcon from "@mui/icons-material/Store";
 import { useEffect, useState, useMemo } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
-import { fetchDocumentCount } from "../../../../Helpers/firebaseHelper";
+import { fetchDocumentCount, fetchQueryCountCount } from "../../../../Helpers/firebaseHelper";
 import { endpoints } from "../../../../Helpers";
+import { Link } from "react-router-dom";
 
-const Widget = ({ type }) => {
+const Widget = ({ type, user }) => {
   // eslint-disable-next-line no-unused-vars
   // const [productsCount, setProductsCount] = useState(10);
   // const [ordersCount, setOrdersCount] = useState(12);
@@ -122,7 +123,7 @@ const Widget = ({ type }) => {
 
   useEffect(() => {
     endpoints.map((endpoint) => {
-      fetchDocumentCount(endpoint).then((count) => {
+      fetchQueryCountCount(endpoint, user).then((count) => {
         setCount((prev) => ({
           ...prev,
           [endpoint]: count
@@ -134,7 +135,7 @@ const Widget = ({ type }) => {
   console.log(count);
 
   return (
-    <div className="widget">
+    <Link to={`/panel/${type}`} className="widget">
       <div className="left">
         <span className="title">{data.title}</span>
         <span className="counter">
@@ -152,7 +153,7 @@ const Widget = ({ type }) => {
         </div>
         {data.icon}
       </div> */}
-    </div>
+    </Link>
   );
 };
 

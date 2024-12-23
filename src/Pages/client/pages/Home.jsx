@@ -8,8 +8,8 @@ function Home() {
     <>
         <Hero/>
         <ExploreByCategories/>
-        {/* <ExploreNewCategories/> */}
-        {/* <HowItWorks/> */}
+        <ExploreNewCategories/>
+        <HowItWorks/>
     </>
   )
 }

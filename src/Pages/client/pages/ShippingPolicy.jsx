@@ -63,7 +63,7 @@ const ShippingPolicy = () => {
           </nav>
         </div>
         <div className="text-center text-gray-400 py-2">
-          &copy; Designed by Wolgan
+          &copy; &nbsp; <b>GRABIX TECHSOLUTIONS PVT LTD</b>
         </div>
       </footer>
     </div>

@@ -1,17 +1,19 @@
-import React from "react";
-import { logo } from "../assets";
-import { BsCart3, BsSearch } from "react-icons/bs";
-import { MdLocationOn } from "react-icons/md";
-import { BiUser } from "react-icons/bi";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import DeliveryLocation from "./DeliveryLocation";
-import MenuDropdown from "./MenuDropdown";
-import SearchComponent from "./SearchComponent";
-import useLocalStorageState from "use-local-storage-state";
+import React from 'react';
+import { logo } from '../assets';
+import { BsCart3 } from 'react-icons/bs';
+import { FaRegUser } from "react-icons/fa";
+import { MdLocationOn } from 'react-icons/md';
+import { BiUser } from 'react-icons/bi';
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import DeliveryLocation from './DeliveryLocation';
+import MenuDropdown from './MenuDropdown';
+import SearchComponent from './SearchComponent';
+import useLocalStorageState from 'use-local-storage-state';
+import { Button } from "@mui/material";
 
 const Navbar = () => {
-  const [cart, setCart] = useLocalStorageState("cart", {
+  const [cart, setCart] = useLocalStorageState('cart', {
     cart: []
   });
 
@@ -39,47 +41,40 @@ const Navbar = () => {
 
   return (
     <>
-      <div className=" z-10 bg-white flex flex-row h-[80px] w-[100%] items-center justify-around md:justify-evenly">
-        <div className="flex flex-row items-center justify-evenly">
-          <Link to="/">
-            <img
-              src={logo}
-              alt="logo"
-              className="h-[24px] md:h-[36px] md:ml-7"
-            />
+      <div className=' z-10 bg-[#2b69bc] sticky top-0 flex gap-3 h-[80px] w-full items-center overflow-hidden'>
+        <div className='flex flex-row items-center gap-3 w-2/4'>
+          <Link to='/' className='w-1/3 h-full object-cover'>
+            <img src={logo} alt='logo' className='w-full object-cover' />
           </Link>
-          <div className="h-[30px] w-[3px] bg-[#c6c6c6b8] rounded-xl ml-4"></div>
-          <h1>
-            <MdLocationOn className="text-[#0A1408] ml-2 mt-4" />{" "}
-          </h1>
-          <p className="text-white text-[12px] md:text-[12px] lg:text-[20px] ml-4 underline">
+          <div className='h-[30px] w-[3px] bg-[#c6c6c6b8] rounded-xl ml-4'></div>
+          <p className='text-[#f8d210] text-lg flex items-center gap-1'>
+            <MdLocationOn className='text-[#f8d210]' />
             <DeliveryLocation />
           </p>
         </div>
         <SearchComponent
           data={[
-            "Apple",
-            "Banana",
-            "Cherry",
-            "Date",
-            "Elderberry",
-            "Fig",
-            "Grape"
+            'Apple',
+            'Banana',
+            'Cherry',
+            'Date',
+            'Elderberry',
+            'Fig',
+            'Grape'
           ]}
         />
-        <BsSearch className="sm:flex text-[#0A1408] text-[20px]" />
-        <Link to="/cart">
+        <Link to='/cart'>
           {cartItem().length <= 0 ? (
-            <BsCart3 className="text-[24px] text-[#0A1408] mr-3" />
+            <BsCart3 className='text-[24px] hover:text-white text-[#f8d210] mr-3' />
           ) : (
             <div>
               <button
-                class="py-4 px-1 relative border-2 border-transparent text-gray-800 rounded-full hover:text-gray-400 focus:outline-none focus:text-gray-500 transition duration-150 ease-in-out"
-                aria-label="Cart"
+                class='py-4 px-1 relative border-2 border-transparent rounded-full'
+                aria-label='Cart'
               >
-                <BsCart3 className="text-[24px] mr-3 text-[#0A1408] " />
-                <span class="absolute inset-0 object-right-top -mr-6">
-                  <div class="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-red-500 text-white">
+                <BsCart3 className='text-[24px] hover:text-white mr-3 text-[#f8d210] ' />
+                <span class='absolute inset-0 object-right-top -mr-6'>
+                  <div class='inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-red-500 text-white'>
                     {totalQuantity}
                   </div>
                 </span>
@@ -89,21 +84,22 @@ const Navbar = () => {
         </Link>
         {!id ? (
           <Link
-            to="/login"
-            className="text-[#0A1408] font-semibold hidden sm:flex"
+            to='/login'
+            className='text-[#0A1408] font-semibold hidden sm:flex'
           >
             Login
           </Link>
         ) : (
           <Link
-            to="/account"
-            className="text-[#0A1408] font-semibold text-xs hover:text-[#f61571] hover:border-[#f61571] border border-[#0A1408] px-5 py-2"
+            to='/account'
+            className=''
           >
-            My account
+            <FaRegUser className="text-[24px] hover:text-white text-[#f8d210] ms-3 me-7"/>
           </Link>
+
         )}
 
-        <BiUser className="flex sm:hidden text-[#0A1408] text-[20px] font-semibold cursor-pointer" />
+        <BiUser className='flex sm:hidden text-[#0A1408] text-[20px] font-semibold cursor-pointer' />
       </div>
     </>
   );
