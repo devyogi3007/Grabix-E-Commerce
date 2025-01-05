@@ -1,22 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import useLocalStorageState from "use-local-storage-state";
+/* eslint-disable jsx-a11y/alt-text */
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import useLocalStorageState from 'use-local-storage-state';
 
-import "react-toastify/dist/ReactToastify.css";
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import 'react-toastify/dist/ReactToastify.css';
+import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 // import { Carousel } from 'react-responsive-carousel';
 
-import { getDocument } from "../../../Helpers/firebaseHelper";
-import styles from "../styles/SingleProduct.module.css";
+import { getDocument } from '../../../Helpers/firebaseHelper';
+import styles from '../styles/SingleProduct.module.css';
+import { Carousel } from 'react-responsive-carousel';
+
+import Banner1 from '../assets/banner1.webp';
+import Banner2 from '../assets/banner2.webp';
+import Banner3 from '../assets/banner3.webp';
 // import { addToCart } from "../../../Redux/Cart/cart.actions";
 
 function SingleProduct() {
   const { id, products } = useParams();
   const dispatch = useDispatch();
   const [data, setData] = useState({});
-  const [cart, setCart] = useLocalStorageState("cart", {
+  const [cart, setCart] = useLocalStorageState('cart', {
     cart: []
   });
   const [quantity, setQuantity] = useState(1);
@@ -26,17 +32,17 @@ function SingleProduct() {
   });
 
   useEffect(() => {
-    getDocument("products", id).then((data) => {
+    getDocument('products', id).then((data) => {
       setData(data);
     });
   }, [id]);
 
   const handleAddToCart = () => {
-    toast.info("Added to Cart!");
+    toast.info('Added to Cart!');
     // dispatch(addToCart({ ...data }));
   };
 
-  console.log("cart", cart);
+  console.log('cart', cart);
 
   const addToCart = React.useCallback(
     (product, quantity) => {
@@ -74,12 +80,29 @@ function SingleProduct() {
 
   const isInCart = (productId) => Object.keys(cart || {}).includes(productId);
 
+  console.log(data?.images);
+
   return (
     <div className={styles.main}>
       <div className={styles.box}>
         <div className={styles.leftDiv}>
-          <div className={styles.sliderBox}>
-            <img src={data?.image} alt="img1" />
+          <div className={`${styles.sliderBox1} single-product-slider`}>
+            {/* <img src={data?.image} alt="img1" /> */}
+            <div>
+              <Carousel className='flex flex-col justify-center items-center'>
+                {(data?.images || [])?.map((img) => (
+                  <div className='w-[50%] flex justify-center items-center'>
+                    <img src={img?.data} className='' />
+                  </div>
+                ))}
+                {/* <div>
+                  <img src={Banner2} className='' />
+                </div>
+                <div>
+                  <img src={Banner3} className='' />
+                </div> */}
+              </Carousel>
+            </div>
           </div>
           <div className={styles.about}>
             <div className={styles.aboutProduct}>
@@ -97,7 +120,7 @@ function SingleProduct() {
           <div className={styles.details}>
             <div className={styles.section}>
               <p>
-                Home {">"} {products} {">"} {data.title}
+                Home {'>'} {products} {'>'} {data.name}
               </p>
             </div>
             <div className={styles.title}>
@@ -123,7 +146,7 @@ function SingleProduct() {
                 {data.discount} {data.discountType} Off
               </div>
             </div>
-            <div className="flex items-center gap-5 mt-2">
+            <div className='flex items-center gap-5 mt-2'>
               <div className={styles.addBtn}>
                 <button
                   // isDisabled={isInCart(data?.id)}
@@ -132,7 +155,7 @@ function SingleProduct() {
                   Add
                 </button>
               </div>
-              <div className={"flex"}>
+              <div className={'flex'}>
                 <button
                   onClick={() => {
                     setQuantity((prev) => {
@@ -140,13 +163,13 @@ function SingleProduct() {
                       return prev - 1;
                     });
                   }}
-                  type="button"
-                  className="bg-slate-300 px-2 disabled:cursor-not-allowed disabled:text-gray-400"
+                  type='button'
+                  className='bg-slate-300 px-2 disabled:cursor-not-allowed disabled:text-gray-400'
                   disabled={quantity === 1}
                 >
                   -
                 </button>
-                <p className="outline-0 w-7 px-2">{quantity}</p>
+                <p className='outline-0 w-7 px-2'>{quantity}</p>
                 <button
                   onClick={() => {
                     setQuantity((prev) => {
@@ -154,8 +177,8 @@ function SingleProduct() {
                       return prev + 1;
                     });
                   }}
-                  type="button"
-                  className="bg-slate-300 px-2  disabled:cursor-not-allowed disabled:text-gray-400"
+                  type='button'
+                  className='bg-slate-300 px-2  disabled:cursor-not-allowed disabled:text-gray-400'
                   disabled={quantity === Number(data?.limit)}
                 >
                   +
@@ -168,8 +191,8 @@ function SingleProduct() {
             <div>
               <div className={styles.workBorder}>
                 <img
-                  src="https://cdn.zeptonow.com/mweb-prod/images/pdp/place-order.svg"
-                  alt="works"
+                  src='https://cdn.zeptonow.com/mweb-prod/images/pdp/place-order.svg'
+                  alt='works'
                 />
               </div>
               <div>
@@ -182,8 +205,8 @@ function SingleProduct() {
             <div>
               <div className={styles.workBorder}>
                 <img
-                  src="https://cdn.zeptonow.com/mweb-prod/images/pdp/do-not-blink.svg"
-                  alt="works"
+                  src='https://cdn.zeptonow.com/mweb-prod/images/pdp/do-not-blink.svg'
+                  alt='works'
                 />
               </div>
               <div>
@@ -196,8 +219,8 @@ function SingleProduct() {
             <div>
               <div className={styles.workBorder}>
                 <img
-                  src="https://cdn.zeptonow.com/mweb-prod/images/pdp/enjoy.svg"
-                  alt="works"
+                  src='https://cdn.zeptonow.com/mweb-prod/images/pdp/enjoy.svg'
+                  alt='works'
                 />
               </div>
               <div>

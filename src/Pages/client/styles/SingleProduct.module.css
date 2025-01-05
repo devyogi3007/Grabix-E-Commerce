@@ -25,14 +25,7 @@
   padding-left: 20px;
 }
 .sliderBox {
-  border: 1px solid #ebeaec;
-  width: 98%;
-  display: flex;
-  justify-content: center;
-  height: 60%;
-  padding: 90px;
-  border-radius: 5px;
-  height: 50%;
+ 
 }
 
 .sliderBox > div > img {

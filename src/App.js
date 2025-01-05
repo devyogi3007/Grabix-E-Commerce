@@ -8,6 +8,7 @@ import * as React from "react";
 import PrivateRoute from "./Routes/AdminPrivateRoute";
 import AuthProvider from "./Pages/admin/context/AuthContext";
 import { ToastContainer } from "react-toastify";
+import Carousel from "./Test";
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
             <Route path="/panel/*" element={<Admin />} />
           </Route>
           <Route path="/panel/login" element={<Login />} />
+          <Route path="/test" element={<Carousel />} />
         </Routes>
         <ToastContainer
           position="top-right"
