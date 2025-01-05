@@ -164,6 +164,13 @@
   align-items: center;
   justify-content: center;
 }
+.single-product-slider .carousel .carousel-status{
+  font-weight: bold;
+  color: black;
+  text-shadow: none !important;
+  right: 1.5rem;
+  font-size: .7rem;
+}
 
 .shadow-lg-top {
   --tw-shadow: 0 -10px 15px -3px rgb(0 0 0 / 0.1),
