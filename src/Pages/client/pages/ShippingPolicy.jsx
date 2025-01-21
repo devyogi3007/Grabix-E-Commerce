@@ -40,7 +40,7 @@ const ShippingPolicy = () => {
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-orange-500 mb-4">Shipping Methods and Costs</h2>
             <p className="text-gray-600 text-lg mb-4">
-              We are currently <span className="text-orange-500 font-semibold">Shipping free</span>. We aim to deliver the order within <span className="text-orange-500 font-semibold">24 hours</span> after ordering depending on the size of the product.
+              We are currently <span className="text-orange-500 font-semibold">Shipping free</span>. We are currently Shipping free. We aim to deliver the order within a minimum time period of 12 hours to a maximum time period of 24 hours after ordering depending on the size of the product.
             </p>
             <p className="text-gray-600 text-lg">
               <span className="font-semibold">Note:</span> Shipping times may vary during peak seasons or due to unforeseen circumstances.
@@ -50,7 +50,7 @@ const ShippingPolicy = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white mt-8">
+      {/* <footer className="bg-gray-800 text-white mt-8">
         <div className="container mx-auto px-4 py-6 flex justify-between items-center">
           <div className="text-xl font-bold">GRABIX</div>
           <nav>
@@ -65,7 +65,7 @@ const ShippingPolicy = () => {
         <div className="text-center text-gray-400 py-2">
           &copy; &nbsp; <b>GRABIX TECHSOLUTIONS PVT LTD</b>
         </div>
-      </footer>
+      </footer> */}
     </div>
   );
 };

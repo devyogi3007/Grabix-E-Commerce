@@ -18,6 +18,7 @@ import PrivacyPolicy from "../Pages/client/pages/PrivacyPolicy";
 import TermsOfUse from "../Pages/client/pages/TermsOfUse";
 import CancellationPolicy from "../Pages/client/pages/CancellationPolicy";
 import ShippingPolicy from "../Pages/client/pages/ShippingPolicy";
+import ContactPage from "../Pages/client/pages/ContactUs";
 
 function CustomerRoutes() {
   return (
@@ -70,6 +71,7 @@ function CustomerRoutes() {
         <Route path="/terms" element={<TermsOfUse />} />
         <Route path="/cancellation-policy" element={<CancellationPolicy />} />
         <Route path="/shipping-policy" element={<ShippingPolicy />} />
+        <Route path="/contact-us" element={<ContactPage />} />
       </Routes>
     </>
   );

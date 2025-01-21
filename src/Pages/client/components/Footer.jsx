@@ -13,11 +13,13 @@ const Footer = () => {
     { name: 'Home', path: '/' },
     { name: 'Become a Supplier', path: '/store/apply', type: 'route' },
     { name: 'Customer Support', path: 'support@grabix.in', type: 'email' },
+    { name: 'Contact us', path: '/contact-us', type: 'route' },
     // { name: 'Careers', path: '/careers' },
     { name: 'Privacy Policy', path: '/privacy-policy', type: 'route' },
     { name: 'Terms of Use', path: '/terms', type: 'route' },
     { name: 'About Us', path: '/about' },
-    { name: 'Cancellation Policy', path: '/cancellation-policy', type: 'route' }
+    { name: 'Return and Cancellation Policy', path: '/cancellation-policy', type: 'route' },
+    { name: 'Shipping Policy', path: '/shipping-policy', type: 'route' }
     // { name: 'Cities', path: '/cities', type: 'route' }
   ];
   return (
@@ -40,6 +42,9 @@ const Footer = () => {
           </div>
           <p className='mt-5'>
             &#169;&nbsp; <b>GRABIX TECHSOLUTIONS PVT LTD</b>
+          </p>
+          <p className='mt-5'>
+          54 Ramnagar Road Number 9, Agartala, Tripura
           </p>
         </div>
         <div className='flex flex-row gap-12 md:gap-x-12 mb-10 mt-6 md:mt-0'>

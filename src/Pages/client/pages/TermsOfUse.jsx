@@ -162,10 +162,10 @@ const TermsOfUse = () => {
           <p className="leading-relaxed">
             If you have any questions or concerns, contact us at{" "}
             <a
-              href="mailto:info@grabix.in"
+              href="mailto:support@grabix.in"
               className="text-yellow-500 hover:underline"
             >
-              info@grabix.in
+              support@grabix.in
             </a>
             .
           </p>
